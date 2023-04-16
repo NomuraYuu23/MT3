@@ -38,6 +38,9 @@
     <ClCompile Include="MT3Vector3.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="MT3Matrix4x4.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -109,5 +112,6 @@
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector4.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.h" />
     <ClInclude Include="MT3Vector3.h" />
+    <ClInclude Include="MT3Matrix4x4.h" />
   </ItemGroup>
 </Project>
