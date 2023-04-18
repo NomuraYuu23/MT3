@@ -1,7 +1,7 @@
 #include <Novice.h>
 #include "MT3Matrix4x4.h"
 
-//‰ÁŽZ
+//åŠ ç®—
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
 
 	Matrix4x4 result;
@@ -16,14 +16,14 @@ Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
 
 }
 
-//Œ¸ŽZ
+//æ¸›ç®—
 Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2) {
 
 	Matrix4x4 result;
 
 	for (int y = 0; y < 4; y++) {
 		for (int x = 0; x < 4; x++) {
-			result.m[y][x] = m1.m[y][x] + m2.m[y][x];
+			result.m[y][x] = m1.m[y][x] - m2.m[y][x];
 		}
 	}
 
@@ -31,7 +31,7 @@ Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2) {
 
 }
 
-//Ï
+//ç©
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 
 	Matrix4x4 result;
@@ -60,7 +60,7 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 
 }
 
-//‹ts—ñ
+//é€†è¡Œåˆ—
 Matrix4x4 Inverse(const Matrix4x4& m) {
 
 	Matrix4x4 result;
@@ -96,6 +96,8 @@ Matrix4x4 Inverse(const Matrix4x4& m) {
 		+ m.m[0][3] * m.m[1][2] * m.m[2][1] * m.m[3][0]
 		+ m.m[0][2] * m.m[1][1] * m.m[2][3] * m.m[3][0]
 		+ m.m[0][1] * m.m[1][3] * m.m[2][2] * m.m[3][0];
+
+
 
 	result.m[0][0] = (
 		+ m.m[1][1] * m.m[2][2] * m.m[3][3]
@@ -133,9 +135,125 @@ Matrix4x4 Inverse(const Matrix4x4& m) {
 		+ m.m[0][2] * m.m[1][1] * m.m[2][3]
 		+ m.m[0][1] * m.m[1][3] * m.m[2][2]) / tmp;
 
+
+
+	result.m[1][0] = (
+		-m.m[1][0] * m.m[2][2] * m.m[3][3]
+		- m.m[1][2] * m.m[2][3] * m.m[3][0]
+		- m.m[1][3] * m.m[2][0] * m.m[3][2]
+
+		+ m.m[1][3] * m.m[2][2] * m.m[3][0]
+		+ m.m[1][2] * m.m[2][0] * m.m[3][3]
+		+ m.m[1][0] * m.m[2][3] * m.m[3][2]) / tmp;
+
+	result.m[1][1] = (
+		+ m.m[0][0] * m.m[2][2] * m.m[3][3]
+		+ m.m[0][2] * m.m[2][3] * m.m[3][0]
+		+ m.m[0][3] * m.m[2][0] * m.m[3][2]
+
+		- m.m[0][3] * m.m[2][2] * m.m[3][0]
+		- m.m[0][2] * m.m[2][0] * m.m[3][3]
+		- m.m[0][0] * m.m[2][3] * m.m[3][2]) / tmp;
+
+	result.m[1][2] = (
+		- m.m[0][0] * m.m[1][2] * m.m[3][3]
+		- m.m[0][2] * m.m[1][3] * m.m[3][0]
+		- m.m[0][3] * m.m[1][0] * m.m[3][2]
+
+		+ m.m[0][3] * m.m[1][2] * m.m[3][0]
+		+ m.m[0][2] * m.m[1][0] * m.m[3][3]
+		+ m.m[0][0] * m.m[1][3] * m.m[3][2]) / tmp;
+
+	result.m[1][3] = (
+		+ m.m[0][0] * m.m[1][2] * m.m[2][3]
+		+ m.m[0][2] * m.m[1][3] * m.m[2][0]
+		+ m.m[0][3] * m.m[1][0] * m.m[2][2]
+
+		- m.m[0][3] * m.m[1][2] * m.m[2][0]
+		- m.m[0][2] * m.m[1][0] * m.m[2][3]
+		- m.m[0][0] * m.m[1][3] * m.m[2][2]) / tmp;
+
+
+
+	result.m[2][0] = (
+		+ m.m[1][0] * m.m[2][1] * m.m[3][3]
+		+ m.m[1][1] * m.m[2][3] * m.m[3][0]
+		+ m.m[1][3] * m.m[2][0] * m.m[3][1]
+
+		- m.m[1][3] * m.m[2][1] * m.m[3][0]
+		- m.m[1][1] * m.m[2][0] * m.m[3][3]
+		- m.m[1][0] * m.m[2][3] * m.m[3][1]) / tmp;
+
+	result.m[2][1] = (
+		- m.m[0][0] * m.m[2][1] * m.m[3][3]
+		- m.m[0][1] * m.m[2][3] * m.m[3][0]
+		- m.m[0][3] * m.m[2][0] * m.m[3][1]
+
+		+ m.m[0][3] * m.m[2][1] * m.m[3][0]
+		+ m.m[0][1] * m.m[2][0] * m.m[3][3]
+		+ m.m[0][0] * m.m[2][3] * m.m[3][1]) / tmp;
+
+	result.m[2][2] = (
+		+ m.m[0][0] * m.m[1][1] * m.m[3][3]
+		+ m.m[0][1] * m.m[1][3] * m.m[3][0]
+		+ m.m[0][3] * m.m[1][0] * m.m[3][1]
+
+		- m.m[0][3] * m.m[1][1] * m.m[3][0]
+		- m.m[0][1] * m.m[1][0] * m.m[3][3]
+		- m.m[0][0] * m.m[1][3] * m.m[3][1]) / tmp;
+
+	result.m[2][3] = (
+		- m.m[0][0] * m.m[1][1] * m.m[2][3]
+		- m.m[0][1] * m.m[1][3] * m.m[2][0]
+		- m.m[0][3] * m.m[1][0] * m.m[2][1]
+
+		+ m.m[0][3] * m.m[1][1] * m.m[2][0]
+		+ m.m[0][1] * m.m[1][0] * m.m[2][3]
+		+ m.m[0][0] * m.m[1][3] * m.m[2][1]) / tmp;
+
+
+
+	result.m[3][0] = (
+		- m.m[1][0] * m.m[2][1] * m.m[3][2]
+		- m.m[1][1] * m.m[2][2] * m.m[3][0]
+		- m.m[1][2] * m.m[2][0] * m.m[3][1]
+
+		+ m.m[1][2] * m.m[2][1] * m.m[3][0]
+		+ m.m[1][1] * m.m[2][0] * m.m[3][2]
+		+ m.m[1][0] * m.m[2][2] * m.m[3][1]) / tmp;
+
+	result.m[3][1] = (
+		+ m.m[0][0] * m.m[2][1] * m.m[3][2]
+		+ m.m[0][1] * m.m[2][2] * m.m[3][0]
+		+ m.m[0][2] * m.m[2][0] * m.m[3][1]
+
+		- m.m[0][2] * m.m[2][1] * m.m[3][0]
+		- m.m[0][1] * m.m[2][0] * m.m[3][2]
+		- m.m[0][0] * m.m[2][2] * m.m[3][1]) / tmp;
+
+	result.m[3][2] = (
+		- m.m[0][0] * m.m[1][1] * m.m[3][2]
+		- m.m[0][1] * m.m[1][2] * m.m[3][0]
+		- m.m[0][2] * m.m[1][0] * m.m[3][1]
+
+		+ m.m[0][2] * m.m[1][1] * m.m[3][0]
+		+ m.m[0][1] * m.m[1][0] * m.m[3][2]
+		+ m.m[0][0] * m.m[1][2] * m.m[3][1]) / tmp;
+
+	result.m[3][3] = (
+		+ m.m[0][0] * m.m[1][1] * m.m[2][2]
+		+ m.m[0][1] * m.m[1][2] * m.m[2][0]
+		+ m.m[0][2] * m.m[1][0] * m.m[2][1]
+
+		- m.m[0][2] * m.m[1][1] * m.m[2][0]
+		- m.m[0][1] * m.m[1][0] * m.m[2][2]
+		- m.m[0][0] * m.m[1][2] * m.m[2][1]) / tmp;
+
+	return result;
+
 }
 
-//“]’us—ñ
+//è»¢ç½®è¡Œåˆ—
 Matrix4x4 Transpose(const Matrix4x4& m) {
 
 	Matrix4x4 result = m;
@@ -153,7 +271,7 @@ Matrix4x4 Transpose(const Matrix4x4& m) {
 
 }
 
-//’PˆÊs—ñ‚Ìì¬
+//å˜ä½è¡Œåˆ—ã®ä½œæˆ
 Matrix4x4 MakeIdentity4x4() {
 
 	Matrix4x4 result;
@@ -173,6 +291,15 @@ Matrix4x4 MakeIdentity4x4() {
 
 }
 
-//ƒxƒNƒgƒ‹•`‰æ
-void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix);
+//ãƒ™ã‚¯ãƒˆãƒ«æç”»
+void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* name) {
 
+	Novice::ScreenPrintf(x,y,"%s",name);
+	
+	for (int row = 0; row < 4; ++row) {
+		for (int column = 0; column < 4; ++column) {
+			Novice::ScreenPrintf(x + column * kColumnWidth, y + (row + 1) * kRowHeight, "%6.02f", matrix.m[row][column]);
+		}
+	}
+
+}

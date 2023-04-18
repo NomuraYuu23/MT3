@@ -1,23 +1,27 @@
 #pragma once
 
-//s—ñ4x4
+//è¡Œåˆ—4x4
 struct Matrix4x4{
 
 	float m[4][4];
 
 };
 
-//‰ÁZ
+
+const int kRowHeight = 20;
+const int kColumnWidth = 60;
+
+//åŠ ç®—
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
-//Œ¸Z
+//æ¸›ç®—
 Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2);
-//Ï
+//ç©
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
-//‹ts—ñ
+//é€†è¡Œåˆ—
 Matrix4x4 Inverse(const Matrix4x4& m);
-//“]’us—ñ
+//è»¢ç½®è¡Œåˆ—
 Matrix4x4 Transpose(const Matrix4x4& m);
-//’PˆÊs—ñ‚Ìì¬
+//å˜ä½è¡Œåˆ—ã®ä½œæˆ
 Matrix4x4 MakeIdentity4x4();
-//ƒxƒNƒgƒ‹•`‰æ
-void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix);
+//ãƒ™ã‚¯ãƒˆãƒ«æç”»
+void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* name);
