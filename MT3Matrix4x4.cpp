@@ -1,4 +1,6 @@
 #include <Novice.h>
+#include <assert.h>
+#include "MT3Vector3.h"
 #include "MT3Matrix4x4.h"
 
 //加算
@@ -287,6 +289,63 @@ Matrix4x4 MakeIdentity4x4() {
 		}
 	}
 
+	return result;
+
+}
+
+
+//平行移動行列
+Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
+
+	Matrix4x4 result;
+
+	for (int y = 0; y < 3; y++) {
+		for (int x = 0; x < 4; x++) {
+			if (y == x) {
+				result.m[y][x] = 1.0f;
+			}
+			else {
+				result.m[y][x] = 0.0f;
+			}
+		}
+	}
+
+	result.m[3][0] = translate.x;
+	result.m[3][1] = translate.y;
+	result.m[3][2] = translate.z;
+	result.m[3][3] = 1.0f;
+
+	return result;
+
+}
+//拡大縮小行列
+Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
+
+	Matrix4x4 result = {};
+
+	result.m[0][0] = scale.x;
+	result.m[1][1] = scale.y;
+	result.m[2][2] = scale.z;
+	result.m[3][3] = 1.0f;
+
+	return result;
+
+}
+
+//座標変換
+Vector3 Trasform(const Vector3& vector, const Matrix4x4& matrix) {
+
+	Vector3 result = {};
+
+	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
+	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + 1.0f * matrix.m[3][1];
+	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + 1.0f * matrix.m[3][2];
+	
+	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + 1.0f * matrix.m[3][3];
+	assert(w != 0.0f);
+	result.x /= w;
+	result.y /= w;
+	result.z /= w;
 	return result;
 
 }
