@@ -399,6 +399,24 @@ Matrix4x4 MakeRotateZMatrix(float radian) {
 
 }
 
+//3次元アフィン変換行列
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
+
+	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
+	
+	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
+	Matrix4x4 rotateXYZMatrix = Multiply(rotateXMatrix, Multiply(rotateYMatrix, rotateZMatrix));
+
+	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
+
+	Matrix4x4 result = Multiply(scaleMatrix, Multiply(rotateXYZMatrix, translateMatrix));
+
+	return result;
+
+}
+
 //ベクトル描画
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* name) {
 
