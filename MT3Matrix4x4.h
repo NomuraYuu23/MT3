@@ -32,5 +32,12 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 //座標変換
 Vector3 Trasform(const Vector3& vector, const Matrix4x4& matrix);
 
+//X軸回転行列
+Matrix4x4 MakeRotateXMatrix(float radian);
+//Y軸回転行列
+Matrix4x4 MakeRotateYMatrix(float radian);
+//Z軸回転行列
+Matrix4x4 MakeRotateZMatrix(float radian);
+
 //ベクトル描画
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* name);

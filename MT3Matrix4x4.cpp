@@ -2,6 +2,7 @@
 #include <assert.h>
 #include "MT3Vector3.h"
 #include "MT3Matrix4x4.h"
+#include <cmath>
 
 //加算
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
@@ -346,6 +347,54 @@ Vector3 Trasform(const Vector3& vector, const Matrix4x4& matrix) {
 	result.x /= w;
 	result.y /= w;
 	result.z /= w;
+	return result;
+
+}
+
+//X軸回転行列
+Matrix4x4 MakeRotateXMatrix(float radian) {
+
+	Matrix4x4 result = {};
+
+	result.m[0][0] = 1.0f;
+	result.m[1][1] = std::cosf(radian);
+	result.m[1][2] = std::sinf(radian);
+	result.m[2][1] = -std::sinf(radian);
+	result.m[2][2] = std::cosf(radian);
+	result.m[3][3] = 1.0f;
+
+	return result;
+
+}
+
+//Y軸回転行列
+Matrix4x4 MakeRotateYMatrix(float radian) {
+
+	Matrix4x4 result = {};
+
+	result.m[0][0] = std::cosf(radian);
+	result.m[0][2] = -std::sinf(radian);
+	result.m[1][1] = 1.0f;
+	result.m[2][0] = std::sinf(radian);
+	result.m[2][2] = std::cosf(radian);
+	result.m[3][3] = 1.0f;
+
+	return result;
+
+}
+
+//Z軸回転行列
+Matrix4x4 MakeRotateZMatrix(float radian) {
+
+	Matrix4x4 result = {};
+
+	result.m[0][0] = std::cosf(radian);
+	result.m[0][1] = std::sinf(radian);
+	result.m[1][0] = -std::sinf(radian);
+	result.m[1][1] = std::cosf(radian);
+	result.m[2][2] = 1.0f;
+	result.m[3][3] = 1.0f;
+
 	return result;
 
 }
