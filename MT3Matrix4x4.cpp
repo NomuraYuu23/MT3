@@ -334,7 +334,7 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 }
 
 //座標変換
-Vector3 Trasform(const Vector3& vector, const Matrix4x4& matrix) {
+Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 
 	Vector3 result = {};
 
