@@ -17,9 +17,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//---変数---//
 
-	Matrix4x4 orthographicMatrix = MakeOrthographicMatrix(-160.0f, 160.0f, 200.0f, 300.0f, 0.0f, 1000.0f);
-	Matrix4x4 perspectiveFovMatrix = MakePerspectiveFovMatrix(0.63f, 1.33f, 0.1f, 1000.0f);
-	Matrix4x4 viewportMatrix = MakeViewportMatrix(100.0f, 200.f, 600.0f, 300.0f, 0.0f, 1.0f);
+	Vector3 v1 = { 1.2f, -3.9f, 2.5f };
+	Vector3 v2 = { 2.0f, 0.4f, -1.3f };
+	Vector3 cross = Cross(v1, v2);
+
+	//Matrix4x4 orthographicMatrix = MakeOrthographicMatrix(-160.0f, 160.0f, 200.0f, 300.0f, 0.0f, 1000.0f);
+	//Matrix4x4 perspectiveFovMatrix = MakePerspectiveFovMatrix(0.63f, 1.33f, 0.1f, 1000.0f);
+	//Matrix4x4 viewportMatrix = MakeViewportMatrix(100.0f, 200.f, 600.0f, 300.0f, 0.0f, 1.0f);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -42,9 +46,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		MatrixScreenPrintf(0, 0, orthographicMatrix, "orthographicMatrix");
-		MatrixScreenPrintf(0, kRowHeight * 5, perspectiveFovMatrix, "perspectiveFovMatrix");
-		MatrixScreenPrintf(0, kRowHeight * 10, viewportMatrix, "viewportMatrix");
+		VectorScreenPrintf(0, 0, cross, "Cross");
 
 		///
 		/// ↑描画処理ここまで
