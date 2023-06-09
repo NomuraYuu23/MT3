@@ -53,6 +53,9 @@
     <ClCompile Include="MT3Math.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="MT3Collision.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -129,5 +132,9 @@
     <ClInclude Include="MT3Draw3D.h" />
     <ClInclude Include="MT3Line.h" />
     <ClInclude Include="MT3Math.h" />
+    <ClInclude Include="MT3Collision.h">
+      <Filter>KamataEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h" />
   </ItemGroup>
 </Project>
