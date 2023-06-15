@@ -115,6 +115,7 @@
     <ClCompile Include="MT3Matrix4x4.cpp" />
     <ClCompile Include="MT3RenderingPipeline.cpp" />
     <ClCompile Include="MT3Vector3.cpp" />
+    <ClCompile Include="Plane.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Matrix4x4.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="MT3Matrix4x4.h" />
     <ClInclude Include="MT3RenderingPipeline.h" />
     <ClInclude Include="MT3Vector3.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="Sphere.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -59,6 +59,9 @@
     <ClCompile Include="CameraMouseMove.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -140,5 +143,6 @@
     </ClInclude>
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="CameraMouseMove.h" />
+    <ClInclude Include="Plane.h" />
   </ItemGroup>
 </Project>

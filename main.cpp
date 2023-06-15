@@ -2,6 +2,7 @@
 #include "MT3Vector3.h"
 #include "MT3Matrix4x4.h"
 #include "Sphere.h"
+#include "Plane.h"
 #include "MT3RenderingPipeline.h"
 #include "MT3Draw3D.h"
 #include "MT3Line.h"
@@ -42,6 +43,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Sphere sphere1{ point, 1.0f };
 	Sphere sphere2{ closestPoint, 1.0f };
 
+	Plane plane{ { 0.0f, 1.0f, 0.0f }, 1.0f};
+
+	//plane.distance = Dot(point, plane.normal);
+
 	unsigned int color = 0xFFFFFFFF;
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -65,7 +70,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 worldMViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
-		if (IsCollision(sphere1, sphere2)) {
+		if (IsCollision(sphere1, plane)) {
 			color = RED;
 		}
 		else {
@@ -83,7 +88,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGrid(worldMViewProjectionMatrix, viewportMatrix);
 
 		DrawSphere(sphere1, worldMViewProjectionMatrix, viewportMatrix,color);
-		DrawSphere(sphere2, worldMViewProjectionMatrix, viewportMatrix, WHITE);
+		//DrawSphere(sphere2, worldMViewProjectionMatrix, viewportMatrix, WHITE);
+
+		DrawPlane(plane, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
@@ -91,8 +98,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		ImGui::DragFloat3("sphere1Center", &sphere1.center.x, 0.01f);
 		ImGui::DragFloat("sphere1Radius", &sphere1.radius, 0.01f);
-		ImGui::DragFloat3("sphere2Center", &sphere2.center.x, 0.01f);
-		ImGui::DragFloat("sphere2Radius", &sphere2.radius, 0.01f);
+		//ImGui::DragFloat3("sphere2Center", &sphere2.center.x, 0.01f);
+		//ImGui::DragFloat("sphere2Radius", &sphere2.radius, 0.01f);
+
+		ImGui::DragFloat3("plane.Normal", &plane.normal.x, 0.01f);
+		plane.normal = Normalize(plane.normal);
+		ImGui::DragFloat("plane.Distance", &plane.distance, 0.01f);
 
 		ImGui::End();
 
