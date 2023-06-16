@@ -126,3 +126,15 @@ void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const 
 	Novice::DrawLine(int(points[2].x), int(points[2].y), int(points[0].x), int(points[0].y), color);
 
 }
+
+void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, unsigned int color) {
+
+	Triangle triangle_{ Transform(Transform(triangle.vertices[0], viewProjectionMatrix), viewportMatrix),
+	 Transform(Transform(triangle.vertices[1], viewProjectionMatrix), viewportMatrix),
+	 Transform(Transform(triangle.vertices[2], viewProjectionMatrix), viewportMatrix) };
+
+	Novice::DrawLine(int(triangle_.vertices[0].x), int(triangle_.vertices[0].y), int(triangle_.vertices[1].x), int(triangle_.vertices[1].y), color);
+	Novice::DrawLine(int(triangle_.vertices[1].x), int(triangle_.vertices[1].y), int(triangle_.vertices[2].x), int(triangle_.vertices[2].y), color);
+	Novice::DrawLine(int(triangle_.vertices[2].x), int(triangle_.vertices[2].y), int(triangle_.vertices[0].x), int(triangle_.vertices[0].y), color);
+
+}

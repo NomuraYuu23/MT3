@@ -85,3 +85,123 @@ bool IsCollision(const Segment& line, const Plane& plane) {
 	return true;
 
 }
+
+/// <summary>
+/// 直線と三角形
+/// </summary>
+/// <param name="line"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const Line& line, const Triangle& triangle) {
+
+	Vector3 v01 = Subtract(triangle.vertices[1], triangle.vertices[0]);
+	Vector3 v12 = Subtract(triangle.vertices[2], triangle.vertices[1]);
+	Vector3 v20 = Subtract(triangle.vertices[0], triangle.vertices[2]);
+
+	Vector3 v1p = Subtract(line.origin, triangle.vertices[1]);
+	Vector3 v2p = Subtract(line.origin, triangle.vertices[2]);
+	Vector3 v0p = Subtract(line.origin, triangle.vertices[0]);
+
+	Vector3 cross01 = Cross(v01, v1p);
+	Vector3 cross12 = Cross(v12, v2p);
+	Vector3 cross20 = Cross(v20, v0p);
+
+	//平面を求める
+	Plane plane = { Normalize(Cross(v01, v12)),  0.0f };
+	plane.distance = plane.normal.x * v20.x + plane.normal.y * v20.y + plane.normal.z * v20.z;
+	
+	//平面との衝突確認
+	if (!IsCollision(line, plane)) {
+		return false;
+	}
+
+	//三角形との衝突確認
+	if (Dot(cross01, plane.normal) >= 0.0f &&
+		Dot(cross12, plane.normal) >= 0.0f &&
+		Dot(cross20, plane.normal) >= 0.0f) {
+		return true;
+	}
+
+	return false;
+
+}
+
+/// <summary>
+/// 半直線と三角形
+/// </summary>
+/// <param name="line"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const Ray& line, const Triangle& triangle) {
+
+	Vector3 v01 = Subtract(triangle.vertices[1], triangle.vertices[0]);
+	Vector3 v12 = Subtract(triangle.vertices[2], triangle.vertices[1]);
+	Vector3 v20 = Subtract(triangle.vertices[0], triangle.vertices[2]);
+
+	Vector3 v1p = Subtract(line.origin, triangle.vertices[1]);
+	Vector3 v2p = Subtract(line.origin, triangle.vertices[2]);
+	Vector3 v0p = Subtract(line.origin, triangle.vertices[0]);
+
+	Vector3 cross01 = Cross(v01, v1p);
+	Vector3 cross12 = Cross(v12, v2p);
+	Vector3 cross20 = Cross(v20, v0p);
+
+	//平面を求める
+	Plane plane = { Normalize(Cross(v01, v12)),  0.0f };
+	plane.distance = plane.normal.x * v20.x + plane.normal.y * v20.y + plane.normal.z * v20.z;
+
+	//平面との衝突確認
+	if (!IsCollision(line, plane)) {
+		return false;
+	}
+
+	//三角形との衝突確認
+	if (Dot(cross01, plane.normal) >= 0.0f &&
+		Dot(cross12, plane.normal) >= 0.0f &&
+		Dot(cross20, plane.normal) >= 0.0f) {
+		return true;
+	}
+
+	return false;
+
+}
+
+/// <summary>
+/// 線分と三角形
+/// </summary>
+/// <param name="line"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const Segment& line, const Triangle& triangle) {
+
+	Vector3 v01 = Subtract(triangle.vertices[1], triangle.vertices[0]);
+	Vector3 v12 = Subtract(triangle.vertices[2], triangle.vertices[1]);
+	Vector3 v20 = Subtract(triangle.vertices[0], triangle.vertices[2]);
+
+	Vector3 v1p = Subtract(line.origin, triangle.vertices[1]);
+	Vector3 v2p = Subtract(line.origin, triangle.vertices[2]);
+	Vector3 v0p = Subtract(line.origin, triangle.vertices[0]);
+
+	Vector3 cross01 = Cross(v01, v1p);
+	Vector3 cross12 = Cross(v12, v2p);
+	Vector3 cross20 = Cross(v20, v0p);
+
+	//平面を求める
+	Plane plane = { Normalize(Cross(v01, v12)),  0.0f };
+	plane.distance = plane.normal.x * v20.x + plane.normal.y * v20.y + plane.normal.z * v20.z;
+
+	//平面との衝突確認
+	if (!IsCollision(line, plane)) {
+		return false;
+	}
+
+	//三角形との衝突確認
+	if (Dot(cross01, plane.normal) >= 0.0f &&
+		Dot(cross12, plane.normal) >= 0.0f &&
+		Dot(cross20, plane.normal) >= 0.0f) {
+		return true;
+	}
+
+	return false;
+
+}

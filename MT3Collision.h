@@ -4,6 +4,7 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "MT3Line.h"
+#include "Triangle.h"
 
 /// <summary>
 /// 球と球
@@ -44,3 +45,27 @@ bool IsCollision(const Ray& line, const Plane& plane);
 /// <param name="plane"></param>
 /// <returns></returns>
 bool IsCollision(const Segment& line, const Plane& plane);
+
+/// <summary>
+/// 直線と三角形
+/// </summary>
+/// <param name="line"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const Line& line, const Triangle& triangle);
+
+/// <summary>
+/// 半直線と三角形
+/// </summary>
+/// <param name="line"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const Ray& line, const Triangle& triangle);
+
+/// <summary>
+/// 線分と三角形
+/// </summary>
+/// <param name="line"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const Segment& line, const Triangle& triangle);

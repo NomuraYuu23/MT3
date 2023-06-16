@@ -154,6 +154,7 @@
     <ClInclude Include="MT3Vector3.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
