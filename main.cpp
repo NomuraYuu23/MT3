@@ -90,8 +90,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//DrawSphere(sphere1, worldMViewProjectionMatrix, viewportMatrix,color);
 		//DrawSphere(sphere2, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 
-		Vector3 start = Transform(Transform(segment.origin, worldMViewProjectionMatrix), viewMatrix);
-		Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), worldMViewProjectionMatrix), viewMatrix);
+		Vector3 start = Transform(Transform(segment.origin, worldMViewProjectionMatrix), viewportMatrix);
+		Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), worldMViewProjectionMatrix), viewportMatrix);
 		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), color);
 
 		DrawPlane(plane, worldMViewProjectionMatrix, viewportMatrix, WHITE);
@@ -105,8 +105,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//ImGui::DragFloat3("sphere2Center", &sphere2.center.x, 0.01f);
 		//ImGui::DragFloat("sphere2Radius", &sphere2.radius, 0.01f);
 
-
-
+		ImGui::DragFloat3("segmentOrigin", &segment.origin.x, 0.01f);
+		ImGui::DragFloat3("segmentDiff", &segment.diff.x, 0.01f);
+		
 		ImGui::DragFloat3("plane.Normal", &plane.normal.x, 0.01f);
 		plane.normal = Normalize(plane.normal);
 		ImGui::DragFloat("plane.Distance", &plane.distance, 0.01f);
