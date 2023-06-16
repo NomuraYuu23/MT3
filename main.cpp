@@ -40,8 +40,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 project = Project(Subtract(point, segment.origin), segment.diff);
 	Vector3 closestPoint = ClosestPoint(point, segment);
 	
-	Sphere sphere1{ point, 1.0f };
-	Sphere sphere2{ closestPoint, 1.0f };
+	//Sphere sphere1{ point, 1.0f };
+	//Sphere sphere2{ closestPoint, 1.0f };
 
 	Plane plane{ { 0.0f, 1.0f, 0.0f }, 1.0f};
 
@@ -70,7 +70,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 worldMViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
-		if (IsCollision(sphere1, plane)) {
+		if (IsCollision(segment, plane)) {
 			color = RED;
 		}
 		else {
@@ -87,8 +87,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(worldMViewProjectionMatrix, viewportMatrix);
 
-		DrawSphere(sphere1, worldMViewProjectionMatrix, viewportMatrix,color);
+		//DrawSphere(sphere1, worldMViewProjectionMatrix, viewportMatrix,color);
 		//DrawSphere(sphere2, worldMViewProjectionMatrix, viewportMatrix, WHITE);
+
+		Vector3 start = Transform(Transform(segment.origin, worldMViewProjectionMatrix), viewMatrix);
+		Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), worldMViewProjectionMatrix), viewMatrix);
+		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), color);
 
 		DrawPlane(plane, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 
@@ -96,10 +100,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 
-		ImGui::DragFloat3("sphere1Center", &sphere1.center.x, 0.01f);
-		ImGui::DragFloat("sphere1Radius", &sphere1.radius, 0.01f);
+		//ImGui::DragFloat3("sphere1Center", &sphere1.center.x, 0.01f);
+		//ImGui::DragFloat("sphere1Radius", &sphere1.radius, 0.01f);
 		//ImGui::DragFloat3("sphere2Center", &sphere2.center.x, 0.01f);
 		//ImGui::DragFloat("sphere2Radius", &sphere2.radius, 0.01f);
+
+
 
 		ImGui::DragFloat3("plane.Normal", &plane.normal.x, 0.01f);
 		plane.normal = Normalize(plane.normal);
