@@ -34,7 +34,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
-	Segment segment{ {-2.0f, -1.0f, 0.0f}, {3.0f, 2.0f, 2.0f} };
+	Segment segment{ {0.0f, 0.1f, 0.0f}, {0.0f, 0.1f, 2.0f} };
 	Vector3 point{ -1.5f, 0.6f, 0.6f };
 
 	Vector3 project = Project(Subtract(point, segment.origin), segment.diff);
