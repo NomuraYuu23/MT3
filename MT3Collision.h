@@ -78,3 +78,11 @@ bool IsCollision(const Segment& line, const Triangle& triangle);
 /// <param name="aabb2"></param>
 /// <returns></returns>
 bool IsCollision(const AABB& aabb1, const AABB& aabb2);
+
+/// <summary>
+/// AABBとAABB
+/// </summary>
+/// <param name="aabb1"></param>
+/// <param name="aabb2"></param>
+/// <returns></returns>
+bool IsCollision(const AABB& aabb, const AABB& aabb2);
