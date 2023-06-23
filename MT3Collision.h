@@ -5,6 +5,7 @@
 #include "Plane.h"
 #include "MT3Line.h"
 #include "Triangle.h"
+#include "AABB.h"
 
 /// <summary>
 /// 球と球
@@ -69,3 +70,11 @@ bool IsCollision(const Ray& line, const Triangle& triangle);
 /// <param name="plane"></param>
 /// <returns></returns>
 bool IsCollision(const Segment& line, const Triangle& triangle);
+
+/// <summary>
+/// AABBとAABB
+/// </summary>
+/// <param name="aabb1"></param>
+/// <param name="aabb2"></param>
+/// <returns></returns>
+bool IsCollision(const AABB& aabb1, const AABB& aabb2);

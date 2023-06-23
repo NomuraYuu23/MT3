@@ -138,3 +138,38 @@ void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatri
 	Novice::DrawLine(int(triangle_.vertices[2].x), int(triangle_.vertices[2].y), int(triangle_.vertices[0].x), int(triangle_.vertices[0].y), color);
 
 }
+
+void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, unsigned int color) {
+
+	Vector3 vertex[8];
+
+	vertex[0] = { aabb.min.x , aabb.max.y, aabb.min.z };
+	vertex[1] = { aabb.min.x , aabb.max.y, aabb.max.z };
+	vertex[2] = { aabb.max.x , aabb.max.y, aabb.min.z };
+	vertex[3] = { aabb.max.x , aabb.max.y, aabb.max.z };
+
+	vertex[4] = { aabb.min.x , aabb.min.y, aabb.min.z };
+	vertex[5] = { aabb.min.x , aabb.min.y, aabb.max.z };
+	vertex[6] = { aabb.max.x , aabb.min.y, aabb.min.z };
+	vertex[7] = { aabb.max.x , aabb.min.y, aabb.max.z };
+
+	for (int i = 0; i < 8; i++) {
+		vertex[i] = Transform(Transform(vertex[i], viewProjectionMatrix), viewportMatrix);
+	}
+
+	Novice::DrawLine(int(vertex[0].x), int(vertex[0].y), int(vertex[1].x), int(vertex[1].y), color);
+	Novice::DrawLine(int(vertex[0].x), int(vertex[0].y), int(vertex[2].x), int(vertex[2].y), color);
+	Novice::DrawLine(int(vertex[1].x), int(vertex[1].y), int(vertex[3].x), int(vertex[3].y), color);
+	Novice::DrawLine(int(vertex[2].x), int(vertex[2].y), int(vertex[3].x), int(vertex[3].y), color);
+
+	Novice::DrawLine(int(vertex[4].x), int(vertex[4].y), int(vertex[5].x), int(vertex[5].y), color);
+	Novice::DrawLine(int(vertex[4].x), int(vertex[4].y), int(vertex[6].x), int(vertex[6].y), color);
+	Novice::DrawLine(int(vertex[5].x), int(vertex[5].y), int(vertex[7].x), int(vertex[7].y), color);
+	Novice::DrawLine(int(vertex[6].x), int(vertex[6].y), int(vertex[7].x), int(vertex[7].y), color);
+
+	Novice::DrawLine(int(vertex[0].x), int(vertex[0].y), int(vertex[4].x), int(vertex[4].y), color);
+	Novice::DrawLine(int(vertex[1].x), int(vertex[1].y), int(vertex[5].x), int(vertex[5].y), color);
+	Novice::DrawLine(int(vertex[2].x), int(vertex[2].y), int(vertex[6].x), int(vertex[6].y), color);
+	Novice::DrawLine(int(vertex[3].x), int(vertex[3].y), int(vertex[7].x), int(vertex[7].y), color);
+
+}
