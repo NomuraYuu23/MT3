@@ -80,9 +80,9 @@ bool IsCollision(const Segment& line, const Triangle& triangle);
 bool IsCollision(const AABB& aabb1, const AABB& aabb2);
 
 /// <summary>
-/// AABBとAABB
+/// AABBと球
 /// </summary>
-/// <param name="aabb1"></param>
-/// <param name="aabb2"></param>
+/// <param name="aabb"></param>
+/// <param name="sphere"></param>
 /// <returns></returns>
-bool IsCollision(const AABB& aabb, const AABB& aabb2);
+bool IsCollision(const AABB& aabb, const Sphere& sphere);

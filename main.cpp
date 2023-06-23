@@ -36,12 +36,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	//Segment segment{ {0.0f, 0.1f, 0.0f}, {0.0f, 0.1f, 2.0f} };
-	//Vector3 point{ -1.5f, 0.6f, 0.6f };
+	Vector3 point{ -1.5f, 0.6f, 0.6f };
 
 	//Vector3 project = Project(Subtract(point, segment.origin), segment.diff);
 	//Vector3 closestPoint = ClosestPoint(point, segment);
 	
-	//Sphere sphere1{ point, 1.0f };
+	Sphere sphere1{ point, 1.0f };
 	//Sphere sphere2{ closestPoint, 1.0f };
 
 	//Plane plane{ { 0.0f, 1.0f, 0.0f }, 1.0f};
@@ -57,10 +57,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		.max{ 0.0f,  0.0f,  0.0f},
 	};
 
-	AABB aabb2{
-	.min{ 0.2f,  0.2f,  0.2f},
-	.max{ 1.0f,  1.0f,  1.0f},
-	};
+	//AABB aabb2{
+	//.min{ 0.2f,  0.2f,  0.2f},
+	//.max{ 1.0f,  1.0f,  1.0f},
+	//};
 
 	unsigned int color = 0xFFFFFFFF;
 
@@ -85,7 +85,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 worldMViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
-		if (IsCollision(aabb1, aabb2)) {
+		if (IsCollision(aabb1, sphere1)) {
 			color = RED;
 		}
 		else {
@@ -102,7 +102,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(worldMViewProjectionMatrix, viewportMatrix);
 
-		//DrawSphere(sphere1, worldMViewProjectionMatrix, viewportMatrix,color);
+		DrawSphere(sphere1, worldMViewProjectionMatrix, viewportMatrix,WHITE);
 		//DrawSphere(sphere2, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 
 		//Vector3 start = Transform(Transform(segment.origin, worldMViewProjectionMatrix), viewportMatrix);
@@ -113,14 +113,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//DrawTriangle(triangle, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 
 		DrawAABB(aabb1, worldMViewProjectionMatrix, viewportMatrix, color);
-		DrawAABB(aabb2, worldMViewProjectionMatrix, viewportMatrix, color);
+		//DrawAABB(aabb2, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 
-		//ImGui::DragFloat3("sphere1Center", &sphere1.center.x, 0.01f);
-		//ImGui::DragFloat("sphere1Radius", &sphere1.radius, 0.01f);
+		ImGui::DragFloat3("sphere1Center", &sphere1.center.x, 0.01f);
+		ImGui::DragFloat("sphere1Radius", &sphere1.radius, 0.01f);
 		//ImGui::DragFloat3("sphere2Center", &sphere2.center.x, 0.01f);
 		//ImGui::DragFloat("sphere2Radius", &sphere2.radius, 0.01f);
 
@@ -144,6 +144,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		aabb1.min.z = (std::min)(aabb1.min.z, aabb1.max.z);
 		aabb1.max.z = (std::max)(aabb1.min.z, aabb1.max.z);
 
+		/*
 		ImGui::DragFloat3("aabb2.min", &aabb2.min.x, 0.01f);
 		ImGui::DragFloat3("aabb2.max", &aabb2.max.x, 0.01f);
 		aabb2.min.x = (std::min)(aabb2.min.x, aabb2.max.x);
@@ -152,6 +153,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		aabb2.max.y = (std::max)(aabb2.min.y, aabb2.max.y);
 		aabb2.min.z = (std::min)(aabb2.min.z, aabb2.max.z);
 		aabb2.max.z = (std::max)(aabb2.min.z, aabb2.max.z);
+		*/
 
 		ImGui::End();
 
