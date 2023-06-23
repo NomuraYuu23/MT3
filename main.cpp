@@ -113,7 +113,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//DrawTriangle(triangle, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 
 		DrawAABB(aabb1, worldMViewProjectionMatrix, viewportMatrix, color);
-		DrawAABB(aabb2, worldMViewProjectionMatrix, viewportMatrix, color);
+		DrawAABB(aabb2, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
