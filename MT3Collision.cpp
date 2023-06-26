@@ -18,7 +18,7 @@ bool IsCollision(const Sphere& s1, const Sphere& s2) {
 bool IsCollision(const Sphere& sphere, const Plane& plane) {
 
 	//1.平面と球の中心点との距離を求める
-	float distance = std::fabsf(Dot(plane.normal,sphere.center) - plane.distance);
+	float distance = std::fabsf(Dot(plane.normal, sphere.center) - plane.distance);
 	//2.1の距離 <= 球の半径なら衝突
 	if (distance <= sphere.radius) {
 		return true;
@@ -272,6 +272,46 @@ bool IsCollision(const AABB& aabb, const Sphere& sphere) {
 	//距離が半径よりも小さければ衝突
 	if (distance <= sphere.radius) {
 		return true;
+	}
+
+	return false;
+
+}
+
+/// <summary>
+/// AABBと線
+/// </summary>
+/// <param name="aabb"></param>
+/// <param name="segment"></param>
+/// <returns></returns>
+bool IsCollision(const AABB& aabb, const Segment& segment) {
+
+	Vector3 tMin = {
+		(aabb.min.x - segment.origin.x) / segment.diff.x,
+		(aabb.min.y - segment.origin.y) / segment.diff.y,
+		(aabb.min.z - segment.origin.z) / segment.diff.z };
+
+	Vector3 tMax = {
+		(aabb.max.x - segment.origin.x) / segment.diff.x,
+		(aabb.max.y - segment.origin.y) / segment.diff.y,
+		(aabb.max.z - segment.origin.z) / segment.diff.z };
+
+	Vector3 tNear = { std::min(tMin.x, tMax.x) ,
+		std::min(tMin.y, tMax.y) ,
+		std::min(tMin.z, tMax.z) };
+
+	Vector3 tFar = { std::max(tMin.x, tMax.x) ,
+		std::max(tMin.y, tMax.y) ,
+		std::max(tMin.z, tMax.z) };
+
+	float tMin_ = std::max(std::max(tNear.x, tNear.y), tNear.z);
+	float tMax_ = std::min(std::min(tFar.x, tFar.y), tFar.z);
+
+	if (tMin_ <= tMax_) {
+
+		if (tMin_ < 1.0f && tMax_ > 0.0f) {
+			return true;
+		}
 	}
 
 	return false;
