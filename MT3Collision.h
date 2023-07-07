@@ -89,9 +89,25 @@ bool IsCollision(const AABB& aabb1, const AABB& aabb2);
 bool IsCollision(const AABB& aabb, const Sphere& sphere);
 
 /// <summary>
-/// AABBと線
+/// AABBと直線
 /// </summary>
-/// <param name="aabb"></param>
+/// <param name="line"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const AABB& aabb, const Line& line);
+
+/// <summary>
+/// AABBと半直線
+/// </summary>
+/// <param name="ray"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const AABB& aabb, const Ray& ray);
+
+/// <summary>
+/// AABBと線分
+/// </summary>
+/// <param name="obb"></param>
 /// <param name="segment"></param>
 /// <returns></returns>
 bool IsCollision(const AABB& aabb, const Segment& segment);

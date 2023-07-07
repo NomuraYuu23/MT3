@@ -279,6 +279,84 @@ bool IsCollision(const AABB& aabb, const Sphere& sphere) {
 }
 
 /// <summary>
+/// AABBと直線
+/// </summary>
+/// <param name="line"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const AABB& aabb, const Line& line) {
+
+	Vector3 tMin = {
+		(aabb.min.x - line.origin.x) / line.diff.x,
+		(aabb.min.y - line.origin.y) / line.diff.y,
+		(aabb.min.z - line.origin.z) / line.diff.z };
+
+	Vector3 tMax = {
+		(aabb.max.x - line.origin.x) / line.diff.x,
+		(aabb.max.y - line.origin.y) / line.diff.y,
+		(aabb.max.z - line.origin.z) / line.diff.z };
+
+	Vector3 tNear = { std::min(tMin.x, tMax.x) ,
+		std::min(tMin.y, tMax.y) ,
+		std::min(tMin.z, tMax.z) };
+
+	Vector3 tFar = { std::max(tMin.x, tMax.x) ,
+		std::max(tMin.y, tMax.y) ,
+		std::max(tMin.z, tMax.z) };
+
+	float tMin_ = std::max(std::max(tNear.x, tNear.y), tNear.z);
+	float tMax_ = std::min(std::min(tFar.x, tFar.y), tFar.z);
+
+	if (tMin_ <= tMax_) {
+		return true;
+	}
+
+	return false;
+
+}
+
+/// <summary>
+/// AABBと半直線
+/// </summary>
+/// <param name="ray"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const AABB& aabb, const Ray& ray) {
+
+
+	Vector3 tMin = {
+		(aabb.min.x - ray.origin.x) / ray.diff.x,
+		(aabb.min.y - ray.origin.y) / ray.diff.y,
+		(aabb.min.z - ray.origin.z) / ray.diff.z };
+
+	Vector3 tMax = {
+		(aabb.max.x - ray.origin.x) / ray.diff.x,
+		(aabb.max.y - ray.origin.y) / ray.diff.y,
+		(aabb.max.z - ray.origin.z) / ray.diff.z };
+
+	Vector3 tNear = { std::min(tMin.x, tMax.x) ,
+		std::min(tMin.y, tMax.y) ,
+		std::min(tMin.z, tMax.z) };
+
+	Vector3 tFar = { std::max(tMin.x, tMax.x) ,
+		std::max(tMin.y, tMax.y) ,
+		std::max(tMin.z, tMax.z) };
+
+	float tMin_ = std::max(std::max(tNear.x, tNear.y), tNear.z);
+	float tMax_ = std::min(std::min(tFar.x, tFar.y), tFar.z);
+
+	if (tMin_ <= tMax_) {
+
+		if (tMax_ > 0.0f) {
+			return true;
+		}
+	}
+
+	return false;
+
+}
+
+/// <summary>
 /// AABBと線
 /// </summary>
 /// <param name="aabb"></param>
