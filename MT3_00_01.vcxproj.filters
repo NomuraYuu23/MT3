@@ -146,5 +146,6 @@
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="OBB.h" />
   </ItemGroup>
 </Project>

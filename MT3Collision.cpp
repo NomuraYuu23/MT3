@@ -317,3 +317,32 @@ bool IsCollision(const AABB& aabb, const Segment& segment) {
 	return false;
 
 }
+
+/// <summary>
+/// OBBと球
+/// </summary>
+/// <param name="aabb"></param>
+/// <param name="segment"></param>
+/// <returns></returns>
+bool IsCollision(const OBB& obb, const Sphere& sphere) {
+
+	Matrix4x4 obbWorldMatrix = {
+		obb.otientatuons[0].x,obb.otientatuons[1].x, obb.otientatuons[2].x, 0,
+		obb.otientatuons[0].y,obb.otientatuons[1].y, obb.otientatuons[2].y, 0,
+		obb.otientatuons[0].z,obb.otientatuons[1].z, obb.otientatuons[2].z, 0,
+		obb.center.x, obb.center.y, obb.center.y, 1 };
+
+	Matrix4x4 obbWorldMatrixInverse = Inverse(obbWorldMatrix);
+
+	Vector3 centerInOBBLocalSpace = Transform(sphere.center, obbWorldMatrixInverse);
+
+	AABB aabbOBBLocal{
+		-obb.size.x,-obb.size.y, -obb.size.z,
+		obb.size.x,obb.size.y, obb.size.z };
+
+	Sphere sphereOBBLocal{ centerInOBBLocalSpace, sphere.radius };
+
+	//ローカル空間で衝突
+	return IsCollision(aabbOBBLocal, sphereOBBLocal);
+
+}

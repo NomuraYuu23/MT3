@@ -4,6 +4,7 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "AABB.h"
+#include "OBB.h"
 #include "MT3RenderingPipeline.h"
 #include "MT3Draw3D.h"
 #include "MT3Line.h"
@@ -30,12 +31,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//---変数---//
 
 	//3D描画
-	Vector3 rotate = {};
+	Vector3 rotate = {0.0f, 0.0f, 0.0f};
 	Vector3 translate = {};
 	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
-	Segment segment{ {-0.7f, 0.3f, 0.0f}, {2.0f, -0.5f, 0.0f} };
+	//Segment segment{ {-0.7f, 0.3f, 0.0f}, {2.0f, -0.5f, 0.0f} };
 	//Vector3 point{ -1.5f, 0.6f, 0.6f };
 
 	//Vector3 project = Project(Subtract(point, segment.origin), segment.diff);
@@ -52,15 +53,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 	//plane.distance = Dot(point, plane.normal);
 
-	AABB aabb1{
-		.min{-0.5f, -0.5f, -0.5f},
-		.max{ 0.5f,  0.5f,  0.5f},
-	};
+	//AABB aabb1{
+	//	.min{-0.5f, -0.5f, -0.5f},
+	//	.max{ 0.5f,  0.5f,  0.5f},
+	//};
 
 	//AABB aabb2{
 	//.min{ 0.2f,  0.2f,  0.2f},
 	//.max{ 1.0f,  1.0f,  1.0f},
 	//};
+
+	//OBB
+	Vector3 obbRotate = { 0.0f, 0.0f, 0.0f };
+	OBB obb{
+		-1.0f,0.0f,0.0f,
+		1.0f,0.0f,0.0f,
+		0.0f,1.0f,0.0f,
+		0.0f,0.0f,1.0f,
+		0.5f,0.5f,0.5f
+	};
+	Sphere sphere{
+		0.0f,0.0f,0.0f,
+		0.5f
+	};
 
 	unsigned int color = 0xFFFFFFFF;
 
@@ -77,6 +92,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		//OBB軸
+		Matrix4x4 rotateMatirx = Multiply(MakeRotateXMatrix(obbRotate.x), Multiply(MakeRotateYMatrix(obbRotate.y), MakeRotateZMatrix(obbRotate.z)));
+
+		obb.otientatuons[0].x = rotateMatirx.m[0][0];
+		obb.otientatuons[0].y = rotateMatirx.m[0][1];
+		obb.otientatuons[0].z = rotateMatirx.m[0][2];
+
+		obb.otientatuons[1].x = rotateMatirx.m[1][0];
+		obb.otientatuons[1].y = rotateMatirx.m[1][1];
+		obb.otientatuons[1].z = rotateMatirx.m[1][2];
+
+		obb.otientatuons[2].x = rotateMatirx.m[2][0];
+		obb.otientatuons[2].y = rotateMatirx.m[2][1];
+		obb.otientatuons[2].z = rotateMatirx.m[2][2];
+
 		//各種行列に計算
 		Matrix4x4 worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
@@ -85,7 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 worldMViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
-		if (IsCollision(aabb1, segment)) {
+		if (IsCollision(obb, sphere)) {
 			color = RED;
 		}
 		else {
@@ -105,15 +135,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//DrawSphere(sphere1, worldMViewProjectionMatrix, viewportMatrix,WHITE);
 		//DrawSphere(sphere2, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 
-		Vector3 start = Transform(Transform(segment.origin, worldMViewProjectionMatrix), viewportMatrix);
-		Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), worldMViewProjectionMatrix), viewportMatrix);
-		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
+		//Vector3 start = Transform(Transform(segment.origin, worldMViewProjectionMatrix), viewportMatrix);
+		//Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), worldMViewProjectionMatrix), viewportMatrix);
+		//Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
 
 		//DrawPlane(plane, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 		//DrawTriangle(triangle, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 
-		DrawAABB(aabb1, worldMViewProjectionMatrix, viewportMatrix, color);
+		//DrawAABB(aabb1, worldMViewProjectionMatrix, viewportMatrix, color);
 		//DrawAABB(aabb2, worldMViewProjectionMatrix, viewportMatrix, WHITE);
+
+		DrawSphere(sphere, worldMViewProjectionMatrix, viewportMatrix, WHITE);
+		DrawOBB(obb, worldMViewProjectionMatrix, viewportMatrix, color);
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
@@ -124,8 +157,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//ImGui::DragFloat3("sphere2Center", &sphere2.center.x, 0.01f);
 		//ImGui::DragFloat("sphere2Radius", &sphere2.radius, 0.01f);
 
-		ImGui::DragFloat3("segmentOrigin", &segment.origin.x, 0.01f);
-		ImGui::DragFloat3("segmentDiff", &segment.diff.x, 0.01f);
+		//ImGui::DragFloat3("segmentOrigin", &segment.origin.x, 0.01f);
+		//ImGui::DragFloat3("segmentDiff", &segment.diff.x, 0.01f);
 		
 		//ImGui::DragFloat3("plane.Normal", &plane.normal.x, 0.01f);
 		//plane.normal = Normalize(plane.normal);
@@ -135,14 +168,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//ImGui::DragFloat3("triangle.vertices[1]", &triangle.vertices[1].x, 0.01f);
 		//ImGui::DragFloat3("triangle.vertices[2]", &triangle.vertices[2].x, 0.01f);
 
-		ImGui::DragFloat3("aabb1.min", &aabb1.min.x, 0.01f);
-		ImGui::DragFloat3("aabb1.max", &aabb1.max.x, 0.01f);
-		aabb1.min.x = (std::min)(aabb1.min.x, aabb1.max.x);
-		aabb1.max.x = (std::max)(aabb1.min.x, aabb1.max.x);
-		aabb1.min.y = (std::min)(aabb1.min.y, aabb1.max.y);
-		aabb1.max.y = (std::max)(aabb1.min.y, aabb1.max.y);
-		aabb1.min.z = (std::min)(aabb1.min.z, aabb1.max.z);
-		aabb1.max.z = (std::max)(aabb1.min.z, aabb1.max.z);
+		//ImGui::DragFloat3("aabb1.min", &aabb1.min.x, 0.01f);
+		//ImGui::DragFloat3("aabb1.max", &aabb1.max.x, 0.01f);
+		//aabb1.min.x = (std::min)(aabb1.min.x, aabb1.max.x);
+		//aabb1.max.x = (std::max)(aabb1.min.x, aabb1.max.x);
+		//aabb1.min.y = (std::min)(aabb1.min.y, aabb1.max.y);
+		//aabb1.max.y = (std::max)(aabb1.min.y, aabb1.max.y);
+		//aabb1.min.z = (std::min)(aabb1.min.z, aabb1.max.z);
+		//aabb1.max.z = (std::max)(aabb1.min.z, aabb1.max.z);
 
 		/*
 		ImGui::DragFloat3("aabb2.min", &aabb2.min.x, 0.01f);
@@ -154,6 +187,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		aabb2.min.z = (std::min)(aabb2.min.z, aabb2.max.z);
 		aabb2.max.z = (std::max)(aabb2.min.z, aabb2.max.z);
 		*/
+
+		ImGui::DragFloat3("obb.center", &obb.center.x, 0.01f);
+		ImGui::SliderAngle("rotateX", &obbRotate.x, 0.01f);
+		ImGui::SliderAngle("rotateY", &obbRotate.y, 0.01f);
+		ImGui::SliderAngle("rotateZ", &obbRotate.z, 0.01f);
+		ImGui::DragFloat3("obb.otientatuons[0]", &obb.otientatuons[0].x, 0.01f);
+		ImGui::DragFloat3("obb.otientatuons[1]", &obb.otientatuons[1].x, 0.01f);
+		ImGui::DragFloat3("obb.otientatuons[2]", &obb.otientatuons[2].x, 0.01f);
+		ImGui::DragFloat3("obb.size", &obb.size.x, 0.01f);
+		ImGui::DragFloat3("sphere.center", &sphere.center.x, 0.01f);
+		ImGui::DragFloat("sphere.radius", &sphere.radius, 0.01f);
+
+
+
+
 
 		ImGui::End();
 

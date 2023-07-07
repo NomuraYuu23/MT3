@@ -6,6 +6,7 @@
 #include "MT3Line.h"
 #include "Triangle.h"
 #include "AABB.h"
+#include "OBB.h"
 
 /// <summary>
 /// 球と球
@@ -94,3 +95,11 @@ bool IsCollision(const AABB& aabb, const Sphere& sphere);
 /// <param name="segment"></param>
 /// <returns></returns>
 bool IsCollision(const AABB& aabb, const Segment& segment);
+
+/// <summary>
+/// OBBと球
+/// </summary>
+/// <param name="aabb"></param>
+/// <param name="segment"></param>
+/// <returns></returns>
+bool IsCollision(const OBB& aabb, const Sphere& sphere);

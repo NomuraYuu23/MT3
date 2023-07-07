@@ -173,3 +173,69 @@ void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Mat
 	Novice::DrawLine(int(vertex[3].x), int(vertex[3].y), int(vertex[7].x), int(vertex[7].y), color);
 
 }
+
+void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, unsigned int color) {
+
+	Vector3 vertex[8];
+
+	vertex[0] = { 
+		obb.center.x + (-obb.size.x * obb.otientatuons[0].x + obb.size.y * obb.otientatuons[0].y + -obb.size.z * obb.otientatuons[0].z) ,
+		obb.center.y + (-obb.size.x * obb.otientatuons[1].x + obb.size.y * obb.otientatuons[1].y + -obb.size.z * obb.otientatuons[1].z) ,
+		obb.center.z + (-obb.size.x * obb.otientatuons[2].x + obb.size.y * obb.otientatuons[2].y + -obb.size.z * obb.otientatuons[2].z) };
+
+	vertex[1] = { 
+		obb.center.x + (-obb.size.x * obb.otientatuons[0].x + obb.size.y * obb.otientatuons[0].y + obb.size.z * obb.otientatuons[0].z) ,
+		obb.center.y + (-obb.size.x * obb.otientatuons[1].x + obb.size.y * obb.otientatuons[1].y + obb.size.z * obb.otientatuons[1].z) ,
+		obb.center.z + (-obb.size.x * obb.otientatuons[2].x + obb.size.y * obb.otientatuons[2].y + obb.size.z * obb.otientatuons[2].z) };
+
+	vertex[2] = { 
+		obb.center.x + (obb.size.x * obb.otientatuons[0].x + obb.size.y * obb.otientatuons[0].y + -obb.size.z * obb.otientatuons[0].z) ,
+		obb.center.y + (obb.size.x * obb.otientatuons[1].x + obb.size.y * obb.otientatuons[1].y + -obb.size.z * obb.otientatuons[1].z) ,
+		obb.center.z + (obb.size.x * obb.otientatuons[2].x + obb.size.y * obb.otientatuons[2].y + -obb.size.z * obb.otientatuons[2].z) };
+
+	vertex[3] = { 
+		obb.center.x + (obb.size.x * obb.otientatuons[0].x + obb.size.y * obb.otientatuons[0].y + obb.size.z * obb.otientatuons[0].z) ,
+		obb.center.y + (obb.size.x * obb.otientatuons[1].x + obb.size.y * obb.otientatuons[1].y + obb.size.z * obb.otientatuons[1].z) ,
+		obb.center.z + (obb.size.x * obb.otientatuons[2].x + obb.size.y * obb.otientatuons[2].y + obb.size.z * obb.otientatuons[2].z) };
+
+	vertex[4] = { 
+		obb.center.x + (-obb.size.x * obb.otientatuons[0].x + -obb.size.y * obb.otientatuons[0].y + -obb.size.z * obb.otientatuons[0].z) ,
+		obb.center.y + (-obb.size.x * obb.otientatuons[1].x + -obb.size.y * obb.otientatuons[1].y + -obb.size.z * obb.otientatuons[1].z) ,
+		obb.center.z + (-obb.size.x * obb.otientatuons[2].x + -obb.size.y * obb.otientatuons[2].y + -obb.size.z * obb.otientatuons[2].z) };
+
+	vertex[5] = { 
+		obb.center.x + (-obb.size.x * obb.otientatuons[0].x + -obb.size.y * obb.otientatuons[0].y + obb.size.z * obb.otientatuons[0].z) ,
+		obb.center.y + (-obb.size.x * obb.otientatuons[1].x + -obb.size.y * obb.otientatuons[1].y + obb.size.z * obb.otientatuons[1].z) ,
+		obb.center.z + (-obb.size.x * obb.otientatuons[2].x + -obb.size.y * obb.otientatuons[2].y + obb.size.z * obb.otientatuons[2].z) };
+
+	vertex[6] = { 
+		obb.center.x + (obb.size.x * obb.otientatuons[0].x + -obb.size.y * obb.otientatuons[0].y + -obb.size.z * obb.otientatuons[0].z) ,
+		obb.center.y + (obb.size.x * obb.otientatuons[1].x + -obb.size.y * obb.otientatuons[1].y + -obb.size.z * obb.otientatuons[1].z) ,
+		obb.center.z + (obb.size.x * obb.otientatuons[2].x + -obb.size.y * obb.otientatuons[2].y + -obb.size.z * obb.otientatuons[2].z) };
+
+	vertex[7] = { 
+		obb.center.x + (obb.size.x * obb.otientatuons[0].x + -obb.size.y * obb.otientatuons[0].y + obb.size.z * obb.otientatuons[0].z) ,
+		obb.center.y + (obb.size.x * obb.otientatuons[1].x + -obb.size.y * obb.otientatuons[1].y + obb.size.z * obb.otientatuons[1].z) ,
+		obb.center.z + (obb.size.x * obb.otientatuons[2].x + -obb.size.y * obb.otientatuons[2].y + obb.size.z * obb.otientatuons[2].z) };
+
+	for (int i = 0; i < 8; i++) {
+		vertex[i] = Transform(Transform(vertex[i], viewProjectionMatrix), viewportMatrix);
+	}
+
+	Novice::DrawLine(int(vertex[0].x), int(vertex[0].y), int(vertex[1].x), int(vertex[1].y), color);
+	Novice::DrawLine(int(vertex[0].x), int(vertex[0].y), int(vertex[2].x), int(vertex[2].y), color);
+	Novice::DrawLine(int(vertex[1].x), int(vertex[1].y), int(vertex[3].x), int(vertex[3].y), color);
+	Novice::DrawLine(int(vertex[2].x), int(vertex[2].y), int(vertex[3].x), int(vertex[3].y), color);
+
+	Novice::DrawLine(int(vertex[4].x), int(vertex[4].y), int(vertex[5].x), int(vertex[5].y), color);
+	Novice::DrawLine(int(vertex[4].x), int(vertex[4].y), int(vertex[6].x), int(vertex[6].y), color);
+	Novice::DrawLine(int(vertex[5].x), int(vertex[5].y), int(vertex[7].x), int(vertex[7].y), color);
+	Novice::DrawLine(int(vertex[6].x), int(vertex[6].y), int(vertex[7].x), int(vertex[7].y), color);
+
+	Novice::DrawLine(int(vertex[0].x), int(vertex[0].y), int(vertex[4].x), int(vertex[4].y), color);
+	Novice::DrawLine(int(vertex[1].x), int(vertex[1].y), int(vertex[5].x), int(vertex[5].y), color);
+	Novice::DrawLine(int(vertex[2].x), int(vertex[2].y), int(vertex[6].x), int(vertex[6].y), color);
+	Novice::DrawLine(int(vertex[3].x), int(vertex[3].y), int(vertex[7].x), int(vertex[7].y), color);
+
+}
+
