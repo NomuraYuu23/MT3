@@ -72,9 +72,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		0.0f,0.0f,1.0f,
 		0.5f,0.5f,0.5f
 	};
-	Sphere sphere{
-		0.0f,0.0f,0.0f,
-		0.5f
+	Segment segment{
+		-0.8f,-0.3f,0.0f,
+		0.5f, 0.5f, 0.5f
 	};
 
 	unsigned int color = 0xFFFFFFFF;
@@ -115,7 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 worldMViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
-		if (IsCollision(obb, sphere)) {
+		if (IsCollision(obb, segment)) {
 			color = RED;
 		}
 		else {
@@ -144,8 +144,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//DrawAABB(aabb1, worldMViewProjectionMatrix, viewportMatrix, color);
 		//DrawAABB(aabb2, worldMViewProjectionMatrix, viewportMatrix, WHITE);
-
-		DrawSphere(sphere, worldMViewProjectionMatrix, viewportMatrix, WHITE);
+		
+		Vector3 start = Transform(Transform(segment.origin, worldMViewProjectionMatrix), viewportMatrix);
+		Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), worldMViewProjectionMatrix), viewportMatrix);
+		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
 		DrawOBB(obb, worldMViewProjectionMatrix, viewportMatrix, color);
 
 		ImGui::Begin("Window");
@@ -196,8 +198,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("obb.otientatuons[1]", &obb.otientatuons[1].x, 0.01f);
 		ImGui::DragFloat3("obb.otientatuons[2]", &obb.otientatuons[2].x, 0.01f);
 		ImGui::DragFloat3("obb.size", &obb.size.x, 0.01f);
-		ImGui::DragFloat3("sphere.center", &sphere.center.x, 0.01f);
-		ImGui::DragFloat("sphere.radius", &sphere.radius, 0.01f);
+		ImGui::DragFloat3("segment.origin", &segment.origin.x, 0.01f);
+		ImGui::DragFloat("segment.diff", &segment.diff.x, 0.01f);
 
 
 

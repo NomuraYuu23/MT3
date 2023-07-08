@@ -431,7 +431,31 @@ bool IsCollision(const OBB& obb, const Sphere& sphere) {
 /// <param name="obb"></param>
 /// <param name="line"></param>
 /// <returns></returns>
-bool IsCollision(const OBB& obb, const Line& line);
+bool IsCollision(const OBB& obb, const Line& line) {
+
+	Matrix4x4 obbWorldMatrix = {
+		obb.otientatuons[0].x,obb.otientatuons[1].x, obb.otientatuons[2].x, 0,
+		obb.otientatuons[0].y,obb.otientatuons[1].y, obb.otientatuons[2].y, 0,
+		obb.otientatuons[0].z,obb.otientatuons[1].z, obb.otientatuons[2].z, 0,
+		obb.center.x, obb.center.y, obb.center.y, 1 };
+
+	Matrix4x4 obbWorldMatrixInverse = Inverse(obbWorldMatrix);
+
+	Vector3 localOrigin = Transform(line.origin, obbWorldMatrixInverse);
+	Vector3 localEnd = Transform(Add(line.origin,line.diff), obbWorldMatrixInverse);
+
+	AABB localAABB{
+		{-obb.size.x, -obb.size.y, -obb.size.z},
+		{obb.size.x, obb.size.y, obb.size.z},
+	};
+
+	Line localLine;
+	localLine.origin = localOrigin;
+	localLine.diff = Subtract(localEnd, localOrigin);
+
+	return IsCollision(localAABB, localLine);
+
+}
 
 /// <summary>
 /// OBBと半直線
@@ -439,7 +463,31 @@ bool IsCollision(const OBB& obb, const Line& line);
 /// <param name="obb"></param>
 /// <param name="ray"></param>
 /// <returns></returns>
-bool IsCollision(const OBB& obb, const Ray& ray);
+bool IsCollision(const OBB& obb, const Ray& ray) {
+
+	Matrix4x4 obbWorldMatrix = {
+	obb.otientatuons[0].x,obb.otientatuons[1].x, obb.otientatuons[2].x, 0,
+	obb.otientatuons[0].y,obb.otientatuons[1].y, obb.otientatuons[2].y, 0,
+	obb.otientatuons[0].z,obb.otientatuons[1].z, obb.otientatuons[2].z, 0,
+	obb.center.x, obb.center.y, obb.center.y, 1 };
+
+	Matrix4x4 obbWorldMatrixInverse = Inverse(obbWorldMatrix);
+
+	Vector3 localOrigin = Transform(ray.origin, obbWorldMatrixInverse);
+	Vector3 localEnd = Transform(Add(ray.origin, ray.diff), obbWorldMatrixInverse);
+
+	AABB localAABB{
+		{-obb.size.x, -obb.size.y, -obb.size.z},
+		{obb.size.x, obb.size.y, obb.size.z},
+	};
+
+	Line localRay;
+	localRay.origin = localOrigin;
+	localRay.diff = Subtract(localEnd, localOrigin);
+
+	return IsCollision(localAABB, localRay);
+
+}
 
 /// <summary>
 /// OBBと線分
@@ -447,4 +495,28 @@ bool IsCollision(const OBB& obb, const Ray& ray);
 /// <param name="obb"></param>
 /// <param name="segment"></param>
 /// <returns></returns>
-bool IsCollision(const OBB& obb, const Segment& segment);
+bool IsCollision(const OBB& obb, const Segment& segment) {
+
+	Matrix4x4 obbWorldMatrix = {
+	obb.otientatuons[0].x,obb.otientatuons[1].x, obb.otientatuons[2].x, 0,
+	obb.otientatuons[0].y,obb.otientatuons[1].y, obb.otientatuons[2].y, 0,
+	obb.otientatuons[0].z,obb.otientatuons[1].z, obb.otientatuons[2].z, 0,
+	obb.center.x, obb.center.y, obb.center.y, 1 };
+
+	Matrix4x4 obbWorldMatrixInverse = Inverse(obbWorldMatrix);
+
+	Vector3 localOrigin = Transform(segment.origin, obbWorldMatrixInverse);
+	Vector3 localEnd = Transform(Add(segment.origin, segment.diff), obbWorldMatrixInverse);
+
+	AABB localAABB{
+		{-obb.size.x, -obb.size.y, -obb.size.z},
+		{obb.size.x, obb.size.y, obb.size.z},
+	};
+
+	Line localSegment;
+	localSegment.origin = localOrigin;
+	localSegment.diff = Subtract(localEnd, localOrigin);
+
+	return IsCollision(localAABB, localSegment);
+	
+}
