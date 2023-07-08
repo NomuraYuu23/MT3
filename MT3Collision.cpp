@@ -399,7 +399,7 @@ bool IsCollision(const AABB& aabb, const Segment& segment) {
 /// <summary>
 /// OBBと球
 /// </summary>
-/// <param name="aabb"></param>
+/// <param name="obb"></param>
 /// <param name="segment"></param>
 /// <returns></returns>
 bool IsCollision(const OBB& obb, const Sphere& sphere) {
@@ -424,3 +424,27 @@ bool IsCollision(const OBB& obb, const Sphere& sphere) {
 	return IsCollision(aabbOBBLocal, sphereOBBLocal);
 
 }
+
+/// <summary>
+/// OBBと直線
+/// </summary>
+/// <param name="obb"></param>
+/// <param name="line"></param>
+/// <returns></returns>
+bool IsCollision(const OBB& obb, const Line& line);
+
+/// <summary>
+/// OBBと半直線
+/// </summary>
+/// <param name="obb"></param>
+/// <param name="ray"></param>
+/// <returns></returns>
+bool IsCollision(const OBB& obb, const Ray& ray);
+
+/// <summary>
+/// OBBと線分
+/// </summary>
+/// <param name="obb"></param>
+/// <param name="segment"></param>
+/// <returns></returns>
+bool IsCollision(const OBB& obb, const Segment& segment);
