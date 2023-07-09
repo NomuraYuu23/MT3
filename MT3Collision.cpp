@@ -520,3 +520,166 @@ bool IsCollision(const OBB& obb, const Segment& segment) {
 	return IsCollision(localAABB, localSegment);
 	
 }
+
+/// <summary>
+/// OBBとOBB
+/// </summary>
+/// <param name="obb"></param>
+/// <param name="obb2"></param>
+/// <returns></returns>
+bool IsCollision(const OBB& obb, const OBB& obb2) {
+
+	//軸
+	Vector3 axis[15];
+
+	//面法線
+	axis[0] = obb.otientatuons[0];
+	axis[1] = obb.otientatuons[1];
+	axis[2] = obb.otientatuons[2];
+	axis[3] = obb2.otientatuons[0];
+	axis[4] = obb2.otientatuons[1];
+	axis[5] = obb2.otientatuons[2];
+
+	//クロス積
+	axis[6] = Cross(obb.otientatuons[0], obb2.otientatuons[0]);
+	axis[7] = Cross(obb.otientatuons[0], obb2.otientatuons[1]);
+	axis[8] = Cross(obb.otientatuons[0], obb2.otientatuons[2]);
+	axis[9] = Cross(obb.otientatuons[1], obb2.otientatuons[0]);
+	axis[10] = Cross(obb.otientatuons[1], obb2.otientatuons[1]);
+	axis[11] = Cross(obb.otientatuons[1], obb2.otientatuons[2]);
+	axis[12] = Cross(obb.otientatuons[2], obb2.otientatuons[0]);
+	axis[13] = Cross(obb.otientatuons[2], obb2.otientatuons[1]);
+	axis[14] = Cross(obb.otientatuons[2], obb2.otientatuons[2]);
+
+	//頂点
+	Vector3 obbVertex[8];
+
+	obbVertex[0] = {
+		obb.center.x + obb.size.x,
+		obb.center.y + obb.size.y,
+		obb.center.z + obb.size.z };
+
+	obbVertex[1] = {
+		obb.center.x + obb.size.x,
+		obb.center.y + obb.size.y,
+		obb.center.z - obb.size.z };
+
+	obbVertex[2] = {
+		obb.center.x + obb.size.x,
+		obb.center.y - obb.size.y,
+		obb.center.z + obb.size.z };
+
+	obbVertex[3] = {
+		obb.center.x + obb.size.x,
+		obb.center.y - obb.size.y,
+		obb.center.z - obb.size.z };
+
+	obbVertex[4] = {
+		obb.center.x - obb.size.x,
+		obb.center.y + obb.size.y,
+		obb.center.z + obb.size.z };
+
+	obbVertex[5] = {
+		obb.center.x - obb.size.x,
+		obb.center.y + obb.size.y,
+		obb.center.z - obb.size.z };
+
+	obbVertex[6] = {
+		obb.center.x - obb.size.x,
+		obb.center.y - obb.size.y,
+		obb.center.z + obb.size.z };
+
+	obbVertex[7] = {
+		obb.center.x - obb.size.x,
+		obb.center.y - obb.size.y,
+		obb.center.z - obb.size.z };
+
+	Vector3 obb2Vertex[8];
+
+	obb2Vertex[0] = {
+		obb2.center.x + obb2.size.x,
+		obb2.center.y + obb2.size.y,
+		obb2.center.z + obb2.size.z };
+
+	obb2Vertex[1] = {
+		obb2.center.x + obb2.size.x,
+		obb2.center.y + obb2.size.y,
+		obb2.center.z - obb2.size.z };
+
+	obb2Vertex[2] = {
+		obb2.center.x + obb2.size.x,
+		obb2.center.y - obb2.size.y,
+		obb2.center.z + obb2.size.z };
+
+	obb2Vertex[3] = {
+		obb2.center.x + obb2.size.x,
+		obb2.center.y - obb2.size.y,
+		obb2.center.z - obb2.size.z };
+
+	obb2Vertex[4] = {
+		obb2.center.x - obb2.size.x,
+		obb2.center.y + obb2.size.y,
+		obb2.center.z + obb2.size.z };
+
+	obb2Vertex[5] = {
+		obb2.center.x - obb2.size.x,
+		obb2.center.y + obb2.size.y,
+		obb2.center.z - obb2.size.z };
+
+	obb2Vertex[6] = {
+		obb2.center.x - obb2.size.x,
+		obb2.center.y - obb2.size.y,
+		obb2.center.z + obb2.size.z };
+
+	obb2Vertex[7] = {
+		obb2.center.x - obb2.size.x,
+		obb2.center.y - obb2.size.y,
+		obb2.center.z - obb2.size.z };
+
+	//1.頂点を軸に対して射影
+	for (int a = 0; a < 15; a++) {
+		float min1 = 0.0f;
+		float max1 = 0.0f;
+		float min2 = 0.0f;
+		float max2 = 0.0f;
+
+		for (int v = 0; v < 8; v++) {
+			//一時保存
+			float tmp = 0.0f;
+			//obb
+			tmp = Dot(axis[a], obbVertex[v]);
+			//2.射影した点の最大値と最小値を求める
+			if (v == 0 || min1 > tmp) {
+				min1 = tmp;
+			}
+			if (v == 0 || max1 < tmp) {
+				max1 = tmp;
+			}
+
+			//obb2
+			tmp = Dot(axis[a], obb2Vertex[v]);
+			//2.射影した点の最大値と最小値を求める
+			if (v == 0 || min2 > tmp) {
+				min2 = tmp;
+			}
+			if (v == 0 || max2 < tmp) {
+				max2 = tmp;
+			}
+		}
+
+		//3.差分の形状を分離軸に射影した長さ
+		float L1 = max1 - min1;
+		float L2 = max2 - min2;
+
+		float sumSpan = L1 + L2;
+		float LonSpan = (std::max)(max1, max2) - (std::min)(min1, min2);
+		if (sumSpan < LonSpan) {
+			//分離しているので分離軸
+			return false;
+		}
+
+	}
+
+	return true;
+
+}

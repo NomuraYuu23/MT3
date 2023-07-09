@@ -144,3 +144,11 @@ bool IsCollision(const OBB& obb, const Ray& ray);
 /// <param name="segment"></param>
 /// <returns></returns>
 bool IsCollision(const OBB& obb, const Segment& segment);
+
+/// <summary>
+/// OBBとOBB
+/// </summary>
+/// <param name="obb"></param>
+/// <param name="obb2"></param>
+/// <returns></returns>
+bool IsCollision(const OBB& obb, const OBB& obb2);

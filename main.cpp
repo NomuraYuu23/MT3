@@ -66,16 +66,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//OBB
 	Vector3 obbRotate = { 0.0f, 0.0f, 0.0f };
 	OBB obb{
-		-1.0f,0.0f,0.0f,
+		0.0f,0.0f,0.0f,
 		1.0f,0.0f,0.0f,
 		0.0f,1.0f,0.0f,
 		0.0f,0.0f,1.0f,
-		0.5f,0.5f,0.5f
+		0.83f,0.26f,0.24f
 	};
-	Segment segment{
-		-0.8f,-0.3f,0.0f,
-		0.5f, 0.5f, 0.5f
+
+	Vector3 obb2Rotate = { -0.05f, -2.49f, 0.15f };
+	OBB obb2{
+		0.9f,0.66f,0.78f,
+		1.0f,0.0f,0.0f,
+		0.0f,1.0f,0.0f,
+		0.0f,0.0f,1.0f,
+		0.5f,0.37f,0.5f
 	};
+
+	//Segment segment{
+	//	-0.8f,-0.3f,0.0f,
+	//	0.5f, 0.5f, 0.5f
+	//};
 
 	unsigned int color = 0xFFFFFFFF;
 
@@ -107,6 +117,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		obb.otientatuons[2].y = rotateMatirx.m[2][1];
 		obb.otientatuons[2].z = rotateMatirx.m[2][2];
 
+		//OBB2軸
+		Matrix4x4 rotateMatirx2 = Multiply(MakeRotateXMatrix(obb2Rotate.x), Multiply(MakeRotateYMatrix(obb2Rotate.y), MakeRotateZMatrix(obb2Rotate.z)));
+
+		obb2.otientatuons[0].x = rotateMatirx2.m[0][0];
+		obb2.otientatuons[0].y = rotateMatirx2.m[0][1];
+		obb2.otientatuons[0].z = rotateMatirx2.m[0][2];
+
+		obb2.otientatuons[1].x = rotateMatirx2.m[1][0];
+		obb2.otientatuons[1].y = rotateMatirx2.m[1][1];
+		obb2.otientatuons[1].z = rotateMatirx2.m[1][2];
+
+		obb2.otientatuons[2].x = rotateMatirx2.m[2][0];
+		obb2.otientatuons[2].y = rotateMatirx2.m[2][1];
+		obb2.otientatuons[2].z = rotateMatirx2.m[2][2];
+
 		//各種行列に計算
 		Matrix4x4 worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
@@ -115,7 +140,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 worldMViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
-		if (IsCollision(obb, segment)) {
+		if (IsCollision(obb, obb2)) {
 			color = RED;
 		}
 		else {
@@ -145,10 +170,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//DrawAABB(aabb1, worldMViewProjectionMatrix, viewportMatrix, color);
 		//DrawAABB(aabb2, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 		
-		Vector3 start = Transform(Transform(segment.origin, worldMViewProjectionMatrix), viewportMatrix);
-		Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), worldMViewProjectionMatrix), viewportMatrix);
-		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
+		//Vector3 start = Transform(Transform(segment.origin, worldMViewProjectionMatrix), viewportMatrix);
+		//Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), worldMViewProjectionMatrix), viewportMatrix);
+		//Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
 		DrawOBB(obb, worldMViewProjectionMatrix, viewportMatrix, color);
+		DrawOBB(obb2, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
@@ -198,8 +224,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("obb.otientatuons[1]", &obb.otientatuons[1].x, 0.01f);
 		ImGui::DragFloat3("obb.otientatuons[2]", &obb.otientatuons[2].x, 0.01f);
 		ImGui::DragFloat3("obb.size", &obb.size.x, 0.01f);
-		ImGui::DragFloat3("segment.origin", &segment.origin.x, 0.01f);
-		ImGui::DragFloat("segment.diff", &segment.diff.x, 0.01f);
+
+		ImGui::DragFloat3("obb2.center", &obb2.center.x, 0.01f);
+		ImGui::SliderAngle("rotate2X", &obb2Rotate.x, 0.01f);
+		ImGui::SliderAngle("rotate2Y", &obb2Rotate.y, 0.01f);
+		ImGui::SliderAngle("rotate2Z", &obb2Rotate.z, 0.01f);
+		ImGui::DragFloat3("obb2.otientatuons[0]", &obb2.otientatuons[0].x, 0.01f);
+		ImGui::DragFloat3("obb2.otientatuons[1]", &obb2.otientatuons[1].x, 0.01f);
+		ImGui::DragFloat3("obb2.otientatuons[2]", &obb2.otientatuons[2].x, 0.01f);
+		ImGui::DragFloat3("obb2.size", &obb2.size.x, 0.01f);
+		//ImGui::DragFloat3("segment.origin", &segment.origin.x, 0.01f);
+		//ImGui::DragFloat("segment.diff", &segment.diff.x, 0.01f);
 
 
 
