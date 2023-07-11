@@ -552,89 +552,117 @@ bool IsCollision(const OBB& obb, const OBB& obb2) {
 	axis[14] = Cross(obb.otientatuons[2], obb2.otientatuons[2]);
 
 	//頂点
+
+	//回転させる
 	Vector3 obbVertex[8];
 
 	obbVertex[0] = {
-		obb.center.x + obb.size.x,
-		obb.center.y + obb.size.y,
-		obb.center.z + obb.size.z };
+		+obb.size.x,
+		+obb.size.y,
+		+obb.size.z };
 
 	obbVertex[1] = {
-		obb.center.x + obb.size.x,
-		obb.center.y + obb.size.y,
-		obb.center.z - obb.size.z };
+		+obb.size.x,
+		+obb.size.y,
+		-obb.size.z };
 
 	obbVertex[2] = {
-		obb.center.x + obb.size.x,
-		obb.center.y - obb.size.y,
-		obb.center.z + obb.size.z };
+		+obb.size.x,
+		-obb.size.y,
+		+obb.size.z };
 
 	obbVertex[3] = {
-		obb.center.x + obb.size.x,
-		obb.center.y - obb.size.y,
-		obb.center.z - obb.size.z };
+		+obb.size.x,
+		-obb.size.y,
+		-obb.size.z };
 
 	obbVertex[4] = {
-		obb.center.x - obb.size.x,
-		obb.center.y + obb.size.y,
-		obb.center.z + obb.size.z };
+		-obb.size.x,
+		+obb.size.y,
+		+obb.size.z };
 
 	obbVertex[5] = {
-		obb.center.x - obb.size.x,
-		obb.center.y + obb.size.y,
-		obb.center.z - obb.size.z };
+		-obb.size.x,
+		+obb.size.y,
+		-obb.size.z };
 
 	obbVertex[6] = {
-		obb.center.x - obb.size.x,
-		obb.center.y - obb.size.y,
-		obb.center.z + obb.size.z };
+		-obb.size.x,
+		-obb.size.y,
+		+obb.size.z };
 
 	obbVertex[7] = {
-		obb.center.x - obb.size.x,
-		obb.center.y - obb.size.y,
-		obb.center.z - obb.size.z };
+		-obb.size.x,
+		-obb.size.y,
+		-obb.size.z };
+
+	Matrix4x4 obbRotateMatrix = {
+		obb.otientatuons[0].x,obb.otientatuons[0].y,obb.otientatuons[0].z,0.0f,
+		obb.otientatuons[1].x,obb.otientatuons[1].y,obb.otientatuons[1].z,0.0f,
+		obb.otientatuons[2].x,obb.otientatuons[2].y,obb.otientatuons[2].z,0.0f,
+		0.0f,0.0f,0.0f,1.0f };
+
+	for (int i = 0; i < 8; i++) {
+
+		obbVertex[i] = Transform(obbVertex[i], obbRotateMatrix);
+		obbVertex[i] = Add(obbVertex[i], obb.center);
+
+	}
 
 	Vector3 obb2Vertex[8];
 
 	obb2Vertex[0] = {
-		obb2.center.x + obb2.size.x,
-		obb2.center.y + obb2.size.y,
-		obb2.center.z + obb2.size.z };
+		+ obb2.size.x,
+		+ obb2.size.y,
+		+ obb2.size.z };
 
 	obb2Vertex[1] = {
-		obb2.center.x + obb2.size.x,
-		obb2.center.y + obb2.size.y,
-		obb2.center.z - obb2.size.z };
+		+ obb2.size.x,
+		+ obb2.size.y,
+		- obb2.size.z };
 
 	obb2Vertex[2] = {
-		obb2.center.x + obb2.size.x,
-		obb2.center.y - obb2.size.y,
-		obb2.center.z + obb2.size.z };
+		+ obb2.size.x,
+		- obb2.size.y,
+		+ obb2.size.z };
 
 	obb2Vertex[3] = {
-		obb2.center.x + obb2.size.x,
-		obb2.center.y - obb2.size.y,
-		obb2.center.z - obb2.size.z };
+		+ obb2.size.x,
+		- obb2.size.y,
+		- obb2.size.z };
 
 	obb2Vertex[4] = {
-		obb2.center.x - obb2.size.x,
-		obb2.center.y + obb2.size.y,
-		obb2.center.z + obb2.size.z };
+		 - obb2.size.x,
+		+ obb2.size.y,
+		+ obb2.size.z };
 
 	obb2Vertex[5] = {
-		obb2.center.x - obb2.size.x,
-		obb2.center.y + obb2.size.y,
-		obb2.center.z - obb2.size.z };
+		- obb2.size.x,
+		+ obb2.size.y,
+		- obb2.size.z };
 
 	obb2Vertex[6] = {
-		obb2.center.x - obb2.size.x,
-		obb2.center.y - obb2.size.y,
-		obb2.center.z + obb2.size.z };
+		- obb2.size.x,
+		- obb2.size.y,
+		+ obb2.size.z };
 
 	obb2Vertex[7] = {
-		obb2.center.x - obb2.size.x,
-		obb2.center.y - obb2.size.y,
-		obb2.center.z - obb2.size.z };
+		- obb2.size.x,
+		- obb2.size.y,
+		- obb2.size.z };
+
+	Matrix4x4 obb2RotateMatrix = {
+	obb2.otientatuons[0].x,obb2.otientatuons[0].y,obb2.otientatuons[0].z,0.0f,
+	obb2.otientatuons[1].x,obb2.otientatuons[1].y,obb2.otientatuons[1].z,0.0f,
+	obb2.otientatuons[2].x,obb2.otientatuons[2].y,obb2.otientatuons[2].z,0.0f,
+	0.0f,0.0f,0.0f,1.0f };
+	
+	for (int i = 0; i < 8; i++) {
+
+		obb2Vertex[i] = Transform(obb2Vertex[i], obb2RotateMatrix);
+		obb2Vertex[i] = Add(obb2Vertex[i], obb2.center);
+
+	}
 
 	//1.頂点を軸に対して射影
 	for (int a = 0; a < 15; a++) {
@@ -647,7 +675,7 @@ bool IsCollision(const OBB& obb, const OBB& obb2) {
 			//一時保存
 			float tmp = 0.0f;
 			//obb
-			tmp = Dot(axis[a], obbVertex[v]);
+			tmp = Dot(Normalize(axis[a]), obbVertex[v]);
 			//2.射影した点の最大値と最小値を求める
 			if (v == 0 || min1 > tmp) {
 				min1 = tmp;
@@ -657,7 +685,7 @@ bool IsCollision(const OBB& obb, const OBB& obb2) {
 			}
 
 			//obb2
-			tmp = Dot(axis[a], obb2Vertex[v]);
+			tmp = Dot(Normalize(axis[a]), obb2Vertex[v]);
 			//2.射影した点の最大値と最小値を求める
 			if (v == 0 || min2 > tmp) {
 				min2 = tmp;
