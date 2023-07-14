@@ -61,7 +61,7 @@ void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMa
 
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, unsigned int color) {
 
-	const uint32_t kSubdivision = 30; //分割数
+	const uint32_t kSubdivision = 16; //分割数
 	const float kLonEvery = 2.0f * float(std::numbers::pi) / float(kSubdivision);//経度分割1つ分の角度
 	const float kLatEvery = float(std::numbers::pi) / float(kSubdivision);//緯度分割1つ分の角度
 	//緯度の方向に分割 
@@ -236,6 +236,50 @@ void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix
 	Novice::DrawLine(int(vertex[1].x), int(vertex[1].y), int(vertex[5].x), int(vertex[5].y), color);
 	Novice::DrawLine(int(vertex[2].x), int(vertex[2].y), int(vertex[6].x), int(vertex[6].y), color);
 	Novice::DrawLine(int(vertex[3].x), int(vertex[3].y), int(vertex[7].x), int(vertex[7].y), color);
+
+}
+
+void DrawBezier(const Vector3& controlPoint0, const Vector3& controlPoint1, const Vector3& controlPoint2,
+	const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, unsigned int color) {
+
+	//分割数
+	const size_t kSubdivision = 16;
+
+	//線描画
+	for (size_t i = 0; i < kSubdivision; i++)
+	{
+
+		float t = i * (1.0f / kSubdivision);
+
+		Vector3 p0p1 = Lerp(controlPoint0, controlPoint1, t);
+		Vector3 p1p2 = Lerp(controlPoint1, controlPoint2, t);
+		Vector3 p1 = Lerp(p0p1, p1p2, t);
+
+		t += (1.0f / kSubdivision);
+
+		p0p1 = Lerp(controlPoint0, controlPoint1, t);
+		p1p2 = Lerp(controlPoint1, controlPoint2, t);
+		Vector3 p2 = Lerp(p0p1, p1p2, t);
+
+
+		p1 = Transform(Transform(p1, viewProjectionMatrix), viewportMatrix);
+		p2 = Transform(Transform(p2, viewProjectionMatrix), viewportMatrix);
+
+		Novice::DrawLine(int(p1.x), int(p1.y), int(p2.x), int(p2.y), color);
+
+	}
+
+	//球の描画
+	const float r = 0.01f;
+	Sphere sphere[3] = {
+		{controlPoint0, r},
+		{controlPoint1, r},
+		{controlPoint2, r},
+	};
+
+	for (size_t i = 0; i < 3; i++) {
+		DrawSphere(sphere[i], viewProjectionMatrix, viewportMatrix, BLACK);
+	}
 
 }
 

@@ -107,3 +107,11 @@ void VectorScreenPrintf(int x, int y, const Vector3& v, const char* name) {
 	Novice::ScreenPrintf(x, y, "%-7.02f%-7.02f%-7.02f%s", v.x, v.y, v.z, name);
 
 }
+
+// 線形補間
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
+
+	Vector3 result = Add(v1, Multiply(t, Subtract(v2, v1)));
+
+	return result;
+}
