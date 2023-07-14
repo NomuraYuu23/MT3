@@ -6,7 +6,6 @@
 #include <cmath>
 #include <numbers>
 
-
 void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix) {
 	const float kGridHalfwidth = 2.0f;										//Gridの半分
 	const uint32_t ksubdivsion = 10;										//分割数
@@ -283,3 +282,42 @@ void DrawBezier(const Vector3& controlPoint0, const Vector3& controlPoint1, cons
 
 }
 
+// 曲線描画テスト
+void CatmullRomSplineDraw(
+	const std::vector<Vector3>& controlPoints, size_t segmentCount,
+	const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, unsigned int color) {
+
+	// 線分で描画する用の頂点リスト
+	std::vector<Vector3> pointDrawing;
+	// 線分の数+1個分の頂点座標を計算
+	for (size_t i = 0; i < segmentCount + 1; i++) {
+		float t = 1.0f / segmentCount * i;
+		Vector3 pos = CatmullRomSpline(controlPoints, t);
+		// 描画リストに追加
+		pointDrawing.push_back(pos);
+	}
+
+	for (std::vector<Vector3>::iterator itr = pointDrawing.begin(); itr < pointDrawing.end() - 1;
+		++itr) {
+		
+		Vector3 p0 = Transform(Transform(*itr, viewProjectionMatrix), viewportMatrix);
+		Vector3 p1 = Transform(Transform(*(itr + 1), viewProjectionMatrix), viewportMatrix);
+		
+
+
+		Novice::DrawLine(int(p0.x), int(p0.y), int(p1.x), int(p1.y), color);
+	}
+
+	//球の描画
+	const float r = 0.01f;
+	std::vector<Sphere> Spheres;
+	for (size_t i = 0; i < controlPoints.size(); i++)
+	{
+		Spheres.push_back(Sphere(controlPoints[i], r));
+	}
+
+	for (size_t i = 0; i < Spheres.size(); i++) {
+		DrawSphere(Spheres[i], viewProjectionMatrix, viewportMatrix, BLACK);
+	}
+
+}

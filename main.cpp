@@ -12,6 +12,7 @@
 #include <numbers>
 #include <cmath>
 #include <imgui.h>
+#include <vector>
 
 const char kWindowTitle[] = "LE2A_13_ノムラユウ_Noviceで3次元";
 
@@ -36,11 +37,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
-	Vector3 controlPoint[3] = {
-		{-0.8f,  0.58f,  1.0f},
-		{1.76f,  1.0f, -0.3f},
-		{0.94f, -0.7f,  2.3f},
+	Vector3 controlPoint[4] = {
+		{ -0.8f,  0.58f,    1.0f},
+		{ 1.76f,   1.0f,   -0.3f},
+		{ 0.94f,  -0.7f,    2.3f},
+		{-0.53f, -0.26f,  -0.15f},
 	};
+
+	std::vector<Vector3> controlPoints;
+	for (size_t i = 0; i < 4; i++)
+	{
+		controlPoints.push_back(controlPoint[i]);
+	}
 
 	unsigned int color = BLUE;
 
@@ -75,16 +83,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(worldMViewProjectionMatrix, viewportMatrix);
 
-		DrawBezier(controlPoint[0], controlPoint[1], controlPoint[2],
-			worldMViewProjectionMatrix, viewportMatrix, color);
+		//DrawBezier(controlPoint[0], controlPoint[1], controlPoint[2],
+		//	worldMViewProjectionMatrix, viewportMatrix, color);
+
+		CatmullRomSplineDraw(controlPoints, 32, worldMViewProjectionMatrix, viewportMatrix, color);
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 
-		ImGui::DragFloat3("controlPoint0", &controlPoint[0].x, 0.01f);
-		ImGui::DragFloat3("controlPoint1", &controlPoint[1].x, 0.01f);
-		ImGui::DragFloat3("controlPoint2", &controlPoint[2].x, 0.01f);
+		ImGui::DragFloat3("controlPoint0", &controlPoints[0].x, 0.01f);
+		ImGui::DragFloat3("controlPoint1", &controlPoints[1].x, 0.01f);
+		ImGui::DragFloat3("controlPoint2", &controlPoints[2].x, 0.01f);
+		ImGui::DragFloat3("controlPoint3", &controlPoints[3].x, 0.01f);
 		ImGui::End();
 
 		///
