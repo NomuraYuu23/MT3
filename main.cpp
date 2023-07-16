@@ -32,25 +32,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//---変数---//
 
 	//3D描画
-	Vector3 rotate = {0.0f, 0.0f, 0.0f};
+	Vector3 rotate = { 0.0f, 0.0f, 0.0f };
 	Vector3 translate = {};
 	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
-	Vector3 controlPoint[4] = {
-		{ -0.8f,  0.58f,    1.0f},
-		{ 1.76f,   1.0f,   -0.3f},
-		{ 0.94f,  -0.7f,    2.3f},
-		{-0.53f, -0.26f,  -0.15f},
+	Vector3 translates[3] = {
+		{0.2f, 1.0f, 0.0f},
+		{0.4f, 0.0f, 0.0f},
+		{0.3f, 0.0f, 0.0f},
 	};
 
-	std::vector<Vector3> controlPoints;
-	for (size_t i = 0; i < 4; i++)
-	{
-		controlPoints.push_back(controlPoint[i]);
-	}
+	Vector3 rotates[3] = {
+		{0.0f, 0.0f, -6.8f},
+		{0.0f, 0.0f, -1.4f},
+		{0.0f, 0.0f,  0.0f},
+	};
 
-	unsigned int color = BLUE;
+	Vector3 scales[3] = {
+		{1.0f,1.0f,1.0f},
+		{1.0f,1.0f,1.0f},
+		{1.0f,1.0f,1.0f},
+	};
+
+
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -73,6 +78,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 worldMViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
+
+		Matrix4x4 affineMatrix[3];
+		//アフィン変換
+		for (size_t i = 0; i < 3; i++)
+		{
+			affineMatrix[i] = MakeAffineMatrix(scales[i], rotates[i], translates[i]);
+			if (i !=  0) {
+				affineMatrix[i] = Multiply(affineMatrix[i], affineMatrix[i - 1]);
+			}
+		}
+
+		Sphere spheres[3] = {
+			{Transform(Vector3{ 0.0f, 0.0f, 0.0f },affineMatrix[0]), 0.05f},
+			{Transform(Vector3{ 0.0f, 0.0f, 0.0f },affineMatrix[1]), 0.05f},
+			{Transform(Vector3{ 0.0f, 0.0f, 0.0f },affineMatrix[2]), 0.05f},
+		};
+
 		///
 		/// ↑更新処理ここまで
 		///
@@ -82,20 +104,41 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(worldMViewProjectionMatrix, viewportMatrix);
+		
+
+		DrawSphere(spheres[0], worldMViewProjectionMatrix, viewportMatrix, RED);
+		DrawSphere(spheres[1], worldMViewProjectionMatrix, viewportMatrix, GREEN);
+		DrawSphere(spheres[2], worldMViewProjectionMatrix, viewportMatrix, BLUE);
+
+		Vector3 start = Transform(Transform(spheres[0].center, worldMViewProjectionMatrix), viewportMatrix);
+		Vector3 end = Transform(Transform(spheres[1].center, worldMViewProjectionMatrix), viewportMatrix);
+
+		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
+
+		start = Transform(Transform(spheres[1].center, worldMViewProjectionMatrix), viewportMatrix);
+		end = Transform(Transform(spheres[2].center, worldMViewProjectionMatrix), viewportMatrix);
+
+		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
 
 		//DrawBezier(controlPoint[0], controlPoint[1], controlPoint[2],
 		//	worldMViewProjectionMatrix, viewportMatrix, color);
-
-		CatmullRomSplineDraw(controlPoints, 32, worldMViewProjectionMatrix, viewportMatrix, color);
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 
-		ImGui::DragFloat3("controlPoint0", &controlPoints[0].x, 0.01f);
-		ImGui::DragFloat3("controlPoint1", &controlPoints[1].x, 0.01f);
-		ImGui::DragFloat3("controlPoint2", &controlPoints[2].x, 0.01f);
-		ImGui::DragFloat3("controlPoint3", &controlPoints[3].x, 0.01f);
+		ImGui::DragFloat3("Translates[0]", &translates[0].x, 0.01f);
+		ImGui::DragFloat3("Rotates[0]", &rotates[0].x, 0.01f);
+		ImGui::DragFloat3("Scales[0]", &scales[0].x, 0.01f);
+
+		ImGui::DragFloat3("Translates[1]", &translates[1].x, 0.01f);
+		ImGui::DragFloat3("Rotates[1]", &rotates[1].x, 0.01f);
+		ImGui::DragFloat3("Scales[1]", &scales[1].x, 0.01f);
+
+		ImGui::DragFloat3("Translates[2]", &translates[2].x, 0.01f);
+		ImGui::DragFloat3("Rotates[2]", &rotates[2].x, 0.01f);
+		ImGui::DragFloat3("Scales[2]", &scales[2].x, 0.01f);
+
 		ImGui::End();
 
 		///
