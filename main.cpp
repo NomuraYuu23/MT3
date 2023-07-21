@@ -117,7 +117,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 
-
+		if (ImGui::Button("start")) {
+			ball.position = { 1.2f, 0.0f, 0.0f };
+			ball.velocity = { 0.0f, 0.0f, 0.0f };
+			ball.acceleration = { 0.0f, 0.0f, 0.0f };
+		}
 
 		ImGui::End();
 
