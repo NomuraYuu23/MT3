@@ -154,6 +154,7 @@
     <ClInclude Include="MT3RenderingPipeline.h" />
     <ClInclude Include="MT3Vector3.h" />
     <ClInclude Include="OBB.h" />
+    <ClInclude Include="OperatorOverloading.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Triangle.h" />

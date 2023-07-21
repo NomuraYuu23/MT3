@@ -14,6 +14,8 @@
 #include <imgui.h>
 #include <vector>
 
+#include "OperatorOverloading.h"
+
 const char kWindowTitle[] = "LE2A_13_ノムラユウ_Noviceで3次元";
 
 const int kWindowWidth = 1280;
@@ -37,25 +39,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
-	Vector3 translates[3] = {
-		{0.2f, 1.0f, 0.0f},
-		{0.4f, 0.0f, 0.0f},
-		{0.3f, 0.0f, 0.0f},
-	};
-
-	Vector3 rotates[3] = {
-		{0.0f, 0.0f, -6.8f},
-		{0.0f, 0.0f, -1.4f},
-		{0.0f, 0.0f,  0.0f},
-	};
-
-	Vector3 scales[3] = {
-		{1.0f,1.0f,1.0f},
-		{1.0f,1.0f,1.0f},
-		{1.0f,1.0f,1.0f},
-	};
-
-
+	Vector3 a{ 0.2f, 1.0f, 0.0f };
+	Vector3 b{ 2.4f, 3.1f, 1.2f };
+	Vector3 c = a + b;
+	Vector3 d = a - b;
+	Vector3 e = a * 2.4f;
+	Vector3 rotateM{ 0.4f, 1.43f, -0.8f };
+	Matrix4x4 rotateXMatirx = MakeRotateXMatrix(rotateM.x);
+	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotateM.y);
+	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotateM.z);
+	Matrix4x4 rotateMatrix = rotateXMatirx * rotateYMatrix * rotateZMatrix;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -79,21 +72,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
 
-		Matrix4x4 affineMatrix[3];
-		//アフィン変換
-		for (size_t i = 0; i < 3; i++)
-		{
-			affineMatrix[i] = MakeAffineMatrix(scales[i], rotates[i], translates[i]);
-			if (i !=  0) {
-				affineMatrix[i] = Multiply(affineMatrix[i], affineMatrix[i - 1]);
-			}
-		}
-
-		Sphere spheres[3] = {
-			{Transform(Vector3{ 0.0f, 0.0f, 0.0f },affineMatrix[0]), 0.05f},
-			{Transform(Vector3{ 0.0f, 0.0f, 0.0f },affineMatrix[1]), 0.05f},
-			{Transform(Vector3{ 0.0f, 0.0f, 0.0f },affineMatrix[2]), 0.05f},
-		};
 
 		///
 		/// ↑更新処理ここまで
@@ -104,21 +82,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(worldMViewProjectionMatrix, viewportMatrix);
-		
-
-		DrawSphere(spheres[0], worldMViewProjectionMatrix, viewportMatrix, RED);
-		DrawSphere(spheres[1], worldMViewProjectionMatrix, viewportMatrix, GREEN);
-		DrawSphere(spheres[2], worldMViewProjectionMatrix, viewportMatrix, BLUE);
-
-		Vector3 start = Transform(Transform(spheres[0].center, worldMViewProjectionMatrix), viewportMatrix);
-		Vector3 end = Transform(Transform(spheres[1].center, worldMViewProjectionMatrix), viewportMatrix);
-
-		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
-
-		start = Transform(Transform(spheres[1].center, worldMViewProjectionMatrix), viewportMatrix);
-		end = Transform(Transform(spheres[2].center, worldMViewProjectionMatrix), viewportMatrix);
-
-		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
 
 		//DrawBezier(controlPoint[0], controlPoint[1], controlPoint[2],
 		//	worldMViewProjectionMatrix, viewportMatrix, color);
@@ -127,17 +90,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 
-		ImGui::DragFloat3("Translates[0]", &translates[0].x, 0.01f);
-		ImGui::DragFloat3("Rotates[0]", &rotates[0].x, 0.01f);
-		ImGui::DragFloat3("Scales[0]", &scales[0].x, 0.01f);
+		ImGui::Text("c:%f, %f, %f", c.x, c.y, c.z);
+		ImGui::Text("d:%f, %f, %f", d.x, d.y, d.z);
+		ImGui::Text("e:%f, %f, %f", e.x, e.y, e.z);
 
-		ImGui::DragFloat3("Translates[1]", &translates[1].x, 0.01f);
-		ImGui::DragFloat3("Rotates[1]", &rotates[1].x, 0.01f);
-		ImGui::DragFloat3("Scales[1]", &scales[1].x, 0.01f);
-
-		ImGui::DragFloat3("Translates[2]", &translates[2].x, 0.01f);
-		ImGui::DragFloat3("Rotates[2]", &rotates[2].x, 0.01f);
-		ImGui::DragFloat3("Scales[2]", &scales[2].x, 0.01f);
+		ImGui::Text("matix:\n%f, %f, %f, %f\n%f, %f,%f, %f\n%f, %f,%f, %f\n%f, %f,%f, %f\n",
+			rotateMatrix.m[0][0], rotateMatrix.m[0][1], rotateMatrix.m[0][2], rotateMatrix.m[0][3],
+			rotateMatrix.m[1][0], rotateMatrix.m[1][1], rotateMatrix.m[1][2], rotateMatrix.m[1][3],
+			rotateMatrix.m[2][0], rotateMatrix.m[2][1], rotateMatrix.m[2][2], rotateMatrix.m[2][3],
+			rotateMatrix.m[3][0], rotateMatrix.m[3][1], rotateMatrix.m[3][2], rotateMatrix.m[3][3]);
 
 		ImGui::End();
 
