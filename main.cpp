@@ -43,16 +43,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//バネ
 	Spring spring{};
-	spring.anchor = { 0.0f,0.0f,0.0f };
-	spring.naturalLength = 1.0f;
+	spring.anchor = { 0.0f,1.0f,0.0f };
+	spring.naturalLength = 0.7f;
 	spring.stiffness = 100.0f;
 	spring.dampingCoefficient = 2.0f;
 
 	Ball ball{};
-	ball.position = { 1.2f, 0.0f, 0.0f };
+	ball.position = { 0.8f, 0.2f, 0.0f };
 	ball.mass = 2.0f;
 	ball.radius = 0.05f;
 	ball.color = BLUE;
+
+	const Vector3 kGravity{ 0.0f, -9.8f, 0.0f };
 
 	float deltaTime = 1.0f / 60.0f;
 
@@ -86,7 +88,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Vector3 displacement = length * (ball.position - restPosition);
 			Vector3 restoringForce = -spring.stiffness * displacement;
 			Vector3 dampingForce = -spring.dampingCoefficient * ball.velocity;
-			Vector3 force = restoringForce + dampingForce;
+			Vector3 force = restoringForce + dampingForce + kGravity;
 			ball.acceleration = force / ball.mass;
 		}
 
@@ -107,7 +109,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawSphere(Sphere(ball.position, ball.radius), worldMViewProjectionMatrix, viewportMatrix, ball.color);
 
 		Vector3 start = Transform(Transform(ball.position, worldMViewProjectionMatrix), viewportMatrix);
-		Vector3 end = Transform(Transform(Vector3(0.0f, 0.0f, 0.0f), worldMViewProjectionMatrix), viewportMatrix);
+		Vector3 end = Transform(Transform(spring.anchor, worldMViewProjectionMatrix), viewportMatrix);
 		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
 
 		//DrawBezier(controlPoint[0], controlPoint[1], controlPoint[2],
@@ -118,7 +120,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 
 		if (ImGui::Button("start")) {
-			ball.position = { 1.2f, 0.0f, 0.0f };
+			ball.position = { 0.8f, 0.2f, 0.0f };
 			ball.velocity = { 0.0f, 0.0f, 0.0f };
 			ball.acceleration = { 0.0f, 0.0f, 0.0f };
 		}
