@@ -84,10 +84,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//計算
 
 		if (isMove) {
+			Segment segment;
+			segment.origin = ball.position;
 			ball.velocity = Add(ball.velocity, ball.acceleration * deltaTime);
 			ball.position = Add(ball.position, ball.velocity * deltaTime);
+			segment.diff = ball.position;
 			if (IsCollision(Sphere{ ball.position, ball.radius }, plane)) {
 				ball.velocity = Reflect(ball.velocity, plane.normal) * e;
+			}
+			else if (IsCollision(segment, plane)) {
+				//垂直判定のため、法線と線の内積を求める
+				float dot = Dot(plane.normal, segment.diff);
+				//tを求める
+				float t = (plane.distance - Dot(segment.origin, plane.normal)) / dot;
+
+				Vector3 sub = (segment.diff - segment.origin) * (1.0f - t);
+				ball.position = ball.position - sub;
+
 			}
 		}
 
