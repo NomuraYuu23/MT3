@@ -121,6 +121,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				isMove = true;
 			}
 		}
+		if (ImGui::Button("reset")) {
+			ball.position = { 0.8f, 1.2f, 0.3f };
+			ball.acceleration = { 0.0f,-9.8f, 0.0f };
+			ball.velocity = { 0.0f,0.0f,0.0f };
+			isMove = false;
+		}
+
+		ImGui::DragFloat("e", &e, 0.01f, 0.0f, 1.0f);
 
 		ImGui::End();
 
