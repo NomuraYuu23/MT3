@@ -172,3 +172,10 @@ Vector3 CatmullRomSpline(
 
 	return result;
 }
+
+// 反射ベクトル
+Vector3 Reflect(const Vector3& input, const Vector3& normal) {
+
+	return Subtract(input, Multiply( 2.0f * Dot(input, normal) , normal));
+
+}

@@ -43,22 +43,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
+	Plane plane;
+	plane.normal = Normalize({ -0.2f, 0.9f, -0.3f });
+	plane.distance = 0.0f;
+
 	Ball ball{};
-	ball.position = { 0.0f, 0.0f, 0.0f };
+	ball.position = { 0.8f, 1.2f, 0.3f };
 	ball.mass = 2.0f;
 	ball.radius = 0.05f;
 	ball.color = WHITE;
+	ball.acceleration = { 0.0f,-9.8f, 0.0f };
+
+	float e = 0.5f;
 
 	float deltaTime = 1.0f / 60.0f;
 
 	bool isMove = false;
-
-	ConicalPendulum conicalpendulum;
-	conicalpendulum.anchor = { 0.0f, 1.0f, 0.0f };
-	conicalpendulum.length = 0.8f;
-	conicalpendulum.halfApexAngle = 0.7f;
-	conicalpendulum.angle = 0.0f;
-	conicalpendulum.angularVelocity = 0.0f;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -84,16 +84,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//計算
 
 		if (isMove) {
-			conicalpendulum.angularVelocity = std::sqrt(9.8f / (conicalpendulum.length * std::cos(conicalpendulum.halfApexAngle)));
-			conicalpendulum.angle += conicalpendulum.angularVelocity * deltaTime;
+			ball.velocity = Add(ball.velocity, ball.acceleration * deltaTime);
+			ball.position = Add(ball.position, ball.velocity * deltaTime);
+			if (IsCollision(Sphere{ ball.position, ball.radius }, plane)) {
+				ball.velocity = Reflect(ball.velocity, plane.normal) * e;
+			}
 		}
 
-		float radius = std::sin(conicalpendulum.halfApexAngle) * conicalpendulum.length;
-		float height = std::cos(conicalpendulum.halfApexAngle) * conicalpendulum.length;
 
-		ball.position.x = conicalpendulum.anchor.x + std::cos(conicalpendulum.angle) * radius;
-		ball.position.y = conicalpendulum.anchor.y - height;
-		ball.position.z = conicalpendulum.anchor.z - std::sin(conicalpendulum.angle) * radius;
 
 		///
 		/// ↑更新処理ここまで
@@ -105,10 +103,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(worldMViewProjectionMatrix, viewportMatrix);
 		
-
-		Vector3 start= Transform(Transform(conicalpendulum.anchor, worldMViewProjectionMatrix), viewportMatrix);
-		Vector3 end = Transform(Transform(ball.position, worldMViewProjectionMatrix), viewportMatrix);
-		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
 
 		DrawSphere(Sphere(ball.position, ball.radius), worldMViewProjectionMatrix, viewportMatrix, ball.color);
 
@@ -126,9 +120,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				isMove = true;
 			}
 		}
-
-		ImGui::DragFloat("Length", &conicalpendulum.length, 0.01f, 0.01f, 2.0f);
-		ImGui::DragFloat("HalfApexAngle", &conicalpendulum.halfApexAngle, 0.01f, 0.0f, 1.0f);
 
 		ImGui::End();
 
