@@ -151,5 +151,6 @@
     <ClInclude Include="OperatorOverloading.h" />
     <ClInclude Include="Spring.h" />
     <ClInclude Include="Pendulum.h" />
+    <ClInclude Include="ConicalPendulum.h" />
   </ItemGroup>
 </Project>

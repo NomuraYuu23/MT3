@@ -18,6 +18,7 @@
 #include "Spring.h"
 #include "Ball.h"
 #include "Pendulum.h"
+#include "ConicalPendulum.h"
 
 const char kWindowTitle[] = "LE2A_13_ノムラユウ_Noviceで3次元";
 
@@ -52,12 +53,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	bool isMove = false;
 
-	Pendulum pendulum;
-	pendulum.anchor = { 0.0f, 1.0f, 0.0f };
-	pendulum.length = 0.8f;
-	pendulum.angle = 0.7f;
-	pendulum.angularVelocity = 0.0f;
-	pendulum.angularAcceleration = 0.0f;
+	ConicalPendulum conicalpendulum;
+	conicalpendulum.anchor = { 0.0f, 1.0f, 0.0f };
+	conicalpendulum.length = 0.8f;
+	conicalpendulum.halfApexAngle = 0.7f;
+	conicalpendulum.angle = 0.0f;
+	conicalpendulum.angularVelocity = 0.0f;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -83,16 +84,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//計算
 
 		if (isMove) {
-			pendulum.angularAcceleration =
-				-(9.8f / pendulum.length) * std::sin(pendulum.angle);
-			pendulum.angularVelocity += pendulum.angularAcceleration * deltaTime;
-			pendulum.angle += pendulum.angularVelocity * deltaTime;
+			conicalpendulum.angularVelocity = std::sqrt(9.8f / (conicalpendulum.length * std::cos(conicalpendulum.halfApexAngle)));
+			conicalpendulum.angle += conicalpendulum.angularVelocity * deltaTime;
 		}
 
-		ball.position.x = pendulum.anchor.x + std::sin(pendulum.angle) * pendulum.length;
-		ball.position.y = pendulum.anchor.y - std::cos(pendulum.angle) * pendulum.length;
-		ball.position.z = pendulum.anchor.z;
+		float radius = std::sin(conicalpendulum.halfApexAngle) * conicalpendulum.length;
+		float height = std::cos(conicalpendulum.halfApexAngle) * conicalpendulum.length;
 
+		ball.position.x = conicalpendulum.anchor.x + std::cos(conicalpendulum.angle) * radius;
+		ball.position.y = conicalpendulum.anchor.y - height;
+		ball.position.z = conicalpendulum.anchor.z - std::sin(conicalpendulum.angle) * radius;
 
 		///
 		/// ↑更新処理ここまで
@@ -105,7 +106,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGrid(worldMViewProjectionMatrix, viewportMatrix);
 		
 
-		Vector3 start= Transform(Transform(pendulum.anchor, worldMViewProjectionMatrix), viewportMatrix);
+		Vector3 start= Transform(Transform(conicalpendulum.anchor, worldMViewProjectionMatrix), viewportMatrix);
 		Vector3 end = Transform(Transform(ball.position, worldMViewProjectionMatrix), viewportMatrix);
 		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
 
@@ -125,6 +126,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				isMove = true;
 			}
 		}
+
+		ImGui::DragFloat("Length", &conicalpendulum.length, 0.01f, 0.01f, 2.0f);
+		ImGui::DragFloat("HalfApexAngle", &conicalpendulum.halfApexAngle, 0.01f, 0.0f, 1.0f);
 
 		ImGui::End();
 

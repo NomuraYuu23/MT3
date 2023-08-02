@@ -147,6 +147,7 @@
     <ClInclude Include="C:\KamataEngine\DirectXGame\scene\GameScene.h" />
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
     <ClInclude Include="CameraMouseMove.h" />
+    <ClInclude Include="ConicalPendulum.h" />
     <ClInclude Include="MT3Collision.h" />
     <ClInclude Include="MT3Draw3D.h" />
     <ClInclude Include="MT3Line.h" />
