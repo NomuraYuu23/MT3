@@ -156,6 +156,7 @@
     <ClInclude Include="MT3Vector3.h" />
     <ClInclude Include="OBB.h" />
     <ClInclude Include="OperatorOverloading.h" />
+    <ClInclude Include="Pendulum.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Spring.h" />

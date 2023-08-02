@@ -147,5 +147,9 @@
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="AABB.h" />
     <ClInclude Include="OBB.h" />
+    <ClInclude Include="Ball.h" />
+    <ClInclude Include="OperatorOverloading.h" />
+    <ClInclude Include="Spring.h" />
+    <ClInclude Include="Pendulum.h" />
   </ItemGroup>
 </Project>

@@ -17,6 +17,7 @@
 #include "OperatorOverloading.h"
 #include "Spring.h"
 #include "Ball.h"
+#include "Pendulum.h"
 
 const char kWindowTitle[] = "LE2A_13_ノムラユウ_Noviceで3次元";
 
@@ -49,14 +50,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	float deltaTime = 1.0f / 60.0f;
 
-	//各速度
-	float angularVelocity = 3.14f;
-	float angle = 0.0f;
-
-	//位置
-	Vector3 centerPoition = { 0.0f, 0.0f, 0.0f};
-	float radius = 0.8f;
 	bool isMove = false;
+
+	Pendulum pendulum;
+	pendulum.anchor = { 0.0f, 1.0f, 0.0f };
+	pendulum.length = 0.8f;
+	pendulum.angle = 0.7f;
+	pendulum.angularVelocity = 0.0f;
+	pendulum.angularAcceleration = 0.0f;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -82,12 +83,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//計算
 
 		if (isMove) {
-			angle += angularVelocity * deltaTime;
+			pendulum.angularAcceleration =
+				-(9.8f / pendulum.length) * std::sin(pendulum.angle);
+			pendulum.angularVelocity += pendulum.angularAcceleration * deltaTime;
+			pendulum.angle += pendulum.angularVelocity * deltaTime;
 		}
 
-		ball.position.x = centerPoition.x + std::cos(angle) * radius;
-		ball.position.y = centerPoition.y + std::sin(angle) * radius;
-		ball.position.z = centerPoition.z;
+		ball.position.x = pendulum.anchor.x + std::sin(pendulum.angle) * pendulum.length;
+		ball.position.y = pendulum.anchor.y - std::cos(pendulum.angle) * pendulum.length;
+		ball.position.z = pendulum.anchor.z;
 
 
 		///
@@ -100,6 +104,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(worldMViewProjectionMatrix, viewportMatrix);
 		
+
+		Vector3 start= Transform(Transform(pendulum.anchor, worldMViewProjectionMatrix), viewportMatrix);
+		Vector3 end = Transform(Transform(ball.position, worldMViewProjectionMatrix), viewportMatrix);
+		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
+
 		DrawSphere(Sphere(ball.position, ball.radius), worldMViewProjectionMatrix, viewportMatrix, ball.color);
 
 		ImGui::Begin("Window");
