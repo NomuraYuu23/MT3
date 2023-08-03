@@ -46,6 +46,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Plane plane;
 	plane.normal = Normalize({ -0.2f, 0.9f, -0.3f });
+	//plane.normal = Normalize({ 0.0f, 1.0f, 0.0f });
 	plane.distance = 0.0f;
 
 	Ball ball{};
@@ -60,6 +61,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	float deltaTime = 1.0f / 60.0f;
 
 	bool isMove = false;
+
+	Capsule capsule;
+	capsule.radius = ball.radius;
+	capsule.segment.origin = ball.position;
+	capsule.segment.diff = ball.position;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -85,14 +91,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//計算
 
 		if (isMove) {
-			Capsule capsule;
-			capsule.radius = ball.radius;
 			capsule.segment.origin = ball.position;
 			ball.velocity = Add(ball.velocity, ball.acceleration * deltaTime);
 			ball.position = Add(ball.position, ball.velocity * deltaTime);
 			capsule.segment.diff = ball.position;
 			if (IsCollision(capsule, plane)) {
+
+				isMove = false;//デバッグ
+				
+				float distance = Dot(plane.normal, ball.position) - plane.distance;
+				if (distance >= 0 ) {
+					ball.position = ball.position + (plane.normal * (ball.radius - distance));
+				}
+				else{
+					ball.position = ball.position + (plane.normal * (distance + ball.radius));
+				}
+
 				ball.velocity = Reflect(ball.velocity, plane.normal) * e;
+
 			}
 		}
 
@@ -109,6 +125,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGrid(worldMViewProjectionMatrix, viewportMatrix);
 		
 		DrawSphere(Sphere(ball.position, ball.radius), worldMViewProjectionMatrix, viewportMatrix, ball.color);
+
+		DrawSphere(Sphere(capsule.segment.origin, capsule.radius), worldMViewProjectionMatrix, viewportMatrix, GREEN);
+		DrawSphere(Sphere(capsule.segment.diff, capsule.radius), worldMViewProjectionMatrix, viewportMatrix, RED);
 
 		DrawPlane(plane, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 

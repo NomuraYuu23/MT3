@@ -732,7 +732,7 @@ bool IsCollision(const Capsule& capsule, const Plane& plane) {
 	//1.平面との距離を求める
 	float distance = (Dot(plane.normal, candidacy) - plane.distance);
 	//2.1の距離 <= 0なら衝突
-	if (distance <= 0) {
+	if (distance < 0) {
 		return true;
 	}
 
@@ -741,7 +741,7 @@ bool IsCollision(const Capsule& capsule, const Plane& plane) {
 	//1.平面との距離を求める
 	distance = (Dot(plane.normal, candidacy) - plane.distance);
 	//2.1の距離 <= 0なら衝突
-	if (distance <= 0) {
+	if (distance < 0) {
 		return true;
 	}
 
@@ -750,9 +750,7 @@ bool IsCollision(const Capsule& capsule, const Plane& plane) {
 		return true;
 	}
 
-	if (IsCollision(Sphere{ capsule.segment.origin,capsule.radius }, plane)) {
-		return true;
-	}
+	//前フレームでやってるからoriginはやらない
 
 	return false;
 
