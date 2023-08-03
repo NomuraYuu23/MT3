@@ -725,7 +725,7 @@ bool IsCollision(const Capsule& capsule, const Plane& plane) {
 	//円柱を縦に切断する平面と直交する平面の法線
 	Vector3 normal = Cross(otientatuons, plane.normal);
 	//ベクトル
-	Vector3 v = Cross(otientatuons, normal);
+	Vector3 v = Cross(normal, otientatuons);
 	
 	//底面に足す
 	Vector3 candidacy = Add(v, capsule.segment.origin);
@@ -750,7 +750,9 @@ bool IsCollision(const Capsule& capsule, const Plane& plane) {
 		return true;
 	}
 
-	//前フレームでやってるからoriginはやらない
+	if (IsCollision(Sphere{ capsule.segment.origin,capsule.radius }, plane)) {
+		return true;
+	}
 
 	return false;
 
