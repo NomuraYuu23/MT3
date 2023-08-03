@@ -45,7 +45,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	Plane plane;
-	plane.normal = Normalize({ -0.2f, 0.9f, -0.3f });
+	plane.normal = Normalize({ -0.2f, 1.2f, -0.3f });
 	//plane.normal = Normalize({ 0.0f, 1.0f, 0.0f });
 	plane.distance = 0.0f;
 
