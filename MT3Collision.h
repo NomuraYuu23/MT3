@@ -7,6 +7,7 @@
 #include "Triangle.h"
 #include "AABB.h"
 #include "OBB.h"
+#include "Capsule.h"
 
 /// <summary>
 /// 球と球
@@ -152,3 +153,11 @@ bool IsCollision(const OBB& obb, const Segment& segment);
 /// <param name="obb2"></param>
 /// <returns></returns>
 bool IsCollision(const OBB& obb, const OBB& obb2);
+
+/// <summary>
+/// カプセルと平面
+/// </summary>
+/// <param name="capsule"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const Capsule& capsule, const Plane& plane);

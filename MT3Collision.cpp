@@ -711,3 +711,50 @@ bool IsCollision(const OBB& obb, const OBB& obb2) {
 	return true;
 
 }
+
+/// <summary>
+/// カプセルと平面
+/// </summary>
+/// <param name="capsule"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const Capsule& capsule, const Plane& plane) {
+
+	//円柱の軸
+	Vector3 otientatuons = Normalize(Subtract(capsule.segment.diff, capsule.segment.origin));
+	//円柱を縦に切断する平面と直交する平面の法線
+	Vector3 normal = Cross(otientatuons, plane.normal);
+	//ベクトル
+	Vector3 v = Cross(otientatuons, normal);
+	
+	//底面に足す
+	Vector3 candidacy = Add(v, capsule.segment.origin);
+	//1.平面との距離を求める
+	float distance = (Dot(plane.normal, candidacy) - plane.distance);
+	//2.1の距離 <= 0なら衝突
+	if (distance <= 0) {
+		return true;
+	}
+
+	//底面に足す
+	candidacy = Add(v, capsule.segment.diff);
+	//1.平面との距離を求める
+	distance = (Dot(plane.normal, candidacy) - plane.distance);
+	//2.1の距離 <= 0なら衝突
+	if (distance <= 0) {
+		return true;
+	}
+
+
+	if (IsCollision(Sphere{ capsule.segment.diff,capsule.radius }, plane)) {
+		return true;
+	}
+
+	if (IsCollision(Sphere{ capsule.segment.origin,capsule.radius }, plane)) {
+		return true;
+	}
+
+	return false;
+
+}
+

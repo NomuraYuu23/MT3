@@ -1,6 +1,8 @@
 #include <Novice.h>
 #include "MT3Vector3.h"
 #include "MT3Matrix4x4.h"
+#include "OperatorOverloading.h"
+
 #include "Sphere.h"
 #include "Plane.h"
 #include "AABB.h"
@@ -14,7 +16,6 @@
 #include <imgui.h>
 #include <vector>
 
-#include "OperatorOverloading.h"
 #include "Spring.h"
 #include "Ball.h"
 #include "Pendulum.h"
@@ -84,23 +85,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//計算
 
 		if (isMove) {
-			Segment segment;
-			segment.origin = ball.position;
+			Capsule capsule;
+			capsule.radius = ball.radius;
+			capsule.segment.origin = ball.position;
 			ball.velocity = Add(ball.velocity, ball.acceleration * deltaTime);
 			ball.position = Add(ball.position, ball.velocity * deltaTime);
-			segment.diff = ball.position;
-			if (IsCollision(Sphere{ ball.position, ball.radius }, plane)) {
+			capsule.segment.diff = ball.position;
+			if (IsCollision(capsule, plane)) {
 				ball.velocity = Reflect(ball.velocity, plane.normal) * e;
-			}
-			else if (IsCollision(segment, plane)) {
-				//垂直判定のため、法線と線の内積を求める
-				float dot = Dot(plane.normal, segment.diff);
-				//tを求める
-				float t = (plane.distance - Dot(segment.origin, plane.normal)) / dot;
-
-				Vector3 sub = (segment.diff - segment.origin) * (1.0f - t);
-				ball.position = ball.position - sub;
-
 			}
 		}
 
@@ -134,6 +126,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				isMove = true;
 			}
 		}
+		if (ImGui::Button("reset")) {
+			ball.position = { 0.8f, 1.2f, 0.3f };
+			ball.acceleration = { 0.0f,-9.8f, 0.0f };
+			ball.velocity = { 0.0f,0.0f,0.0f };
+			isMove = false;
+		}
+
+		ImGui::DragFloat("e", &e, 0.01f, 0.0f, 1.0f);
 
 		ImGui::End();
 
