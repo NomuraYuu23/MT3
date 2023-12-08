@@ -11,7 +11,7 @@ ShortestDistance* ShortestDistance::GetInstance()
 float ShortestDistance::PointLineDist(const Vector3& p, const Line& l, Vector3& h, float& t)
 {
 
-	float lenSqV = Length(Normalize(l.diff));
+	float lenSqV = Dot(l.diff, l.diff);
 	t = 0.0f;
 	if (lenSqV > 0.0f) {
 		t = Dot(l.diff, Subtract(p, l.origin)) / lenSqV;
@@ -29,14 +29,14 @@ float ShortestDistance::PointSegmentDist(const Vector3& p, const Segment& seg, V
 	const Vector3 e = Add(seg.origin, seg.diff);
 
 	// 垂線の長さ、垂線の足の座標およびtを算出
-	float len = PointLineDist(p, Line(seg.origin, seg.diff), h, t);
+	float len = PointLineDist(p, Line(seg.origin, Subtract(e, seg.origin)), h, t);
 
-	if (Dot(Subtract(p, seg.origin), Subtract(e, seg.origin)) < 0.0f) {
+	if (Dot(Subtract(p, seg.origin), Subtract(e, seg.origin)) <= 0.0f) {
 		// 始点側の外側
 		h = seg.origin;
 		return Length(Subtract(seg.origin, p));
 	}
-	else if (Dot(Subtract(p, e), Subtract(seg.origin, e)) < 0.0f) {
+	else if (Dot(Subtract(p, e), Subtract(seg.origin, e)) <= 0.0f) {
 		// 終点側の外側
 		h = e;
 		return Length(Subtract(e, p));
@@ -46,7 +46,7 @@ float ShortestDistance::PointSegmentDist(const Vector3& p, const Segment& seg, V
 
 }
 
-float ShortestDistance::LineLineDist(const Line& l1, const Line& l2, Vector3& p1, Vector3& p2, float& t1, float t2)
+float ShortestDistance::LineLineDist(const Line& l1, const Line& l2, Vector3& p1, Vector3& p2, float& t1, float& t2)
 {
 
 	// 2直線が平行?
@@ -61,8 +61,8 @@ float ShortestDistance::LineLineDist(const Line& l1, const Line& l2, Vector3& p1
 
 	// 2直線はねじれ関係
 	float dotV1V2 = Dot(l1.diff, l2.diff);
-	float dotV1V1 = Length(Normalize(l1.diff));
-	float dotV2V2 = Length(Normalize(l2.diff));
+	float dotV1V1 = Dot(l1.diff, l1.diff);
+	float dotV2V2 = Dot(l2.diff, l2.diff);
 	Vector3 VecL1L2 = Subtract(l1.origin, l2.origin) ;
 
 	t1 = (dotV1V2 * Dot(l2.diff, VecL1L2) - dotV2V2 * Dot(l1.diff, VecL1L2)) / (dotV1V1 * dotV2V2 - dotV1V2 * dotV1V2);
@@ -74,7 +74,7 @@ float ShortestDistance::LineLineDist(const Line& l1, const Line& l2, Vector3& p1
 
 }
 
-float ShortestDistance::SegmentSegmentDist(const Segment& seg1, const Segment& seg2, Vector3& p1, Vector3& p2, float& t1, float t2)
+float ShortestDistance::SegmentSegmentDist(const Segment& seg1, const Segment& seg2, Vector3& p1, Vector3& p2, float& t1, float& t2)
 {
 	
 	// S1が縮退している?
@@ -135,7 +135,7 @@ float ShortestDistance::SegmentSegmentDist(const Segment& seg1, const Segment& s
 
 	t2 = std::clamp(t2, 0.0f, 1.0f);
 	p2 = Add(Multiply(1.0f - t2, seg2.origin), Multiply(t2, Add(seg2.origin, seg2.diff)));
-	float len = PointSegmentDist(p2, seg1, p1, t1);
+	len = PointSegmentDist(p2, seg1, p1, t1);
 	if (0.0f <= t1 && t1 <= 1.0f) {
 		return len;
 	}

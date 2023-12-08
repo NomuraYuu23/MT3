@@ -44,33 +44,46 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
-	Plane plane;
-	plane.normal = Normalize({ -0.2f, 1.2f, -0.3f });
-	//plane.normal = Normalize({ 0.0f, 1.0f, 0.0f });
-	plane.distance = 0.0f;
+	//Plane plane;
+	//plane.normal = Normalize({ -0.2f, 1.2f, -0.3f });
+	////plane.normal = Normalize({ 0.0f, 1.0f, 0.0f });
+	//plane.distance = 0.0f;
 
-	Ball ball{};
-	ball.position = { 0.8f, 1.2f, 0.3f };
-	ball.mass = 2.0f;
-	ball.radius = 0.05f;
-	ball.color = WHITE;
-	ball.acceleration = { 0.0f,-9.8f, 0.0f };
+	//Ball ball{};
+	//ball.position = { 0.8f, 1.2f, 0.3f };
+	//ball.mass = 2.0f;
+	//ball.radius = 0.05f;
+	//ball.color = WHITE;
+	//ball.acceleration = { 0.0f,-9.8f, 0.0f };
 
-	// 反発係数
-	float e = 0.8f;
+	//// 反発係数
+	//float e = 0.8f;
 
-	float deltaTime = 1.0f / 60.0f;
+	//float deltaTime = 1.0f / 60.0f;
 
-	bool isMove = false;
+	//bool isMove = false;
 
-	// カプセル
-	Capsule capsule;
-	capsule.radius = ball.radius;
-	capsule.segment.origin = ball.position;
-	capsule.segment.diff = ball.position;
+	//// カプセル
+	//Capsule capsule;
+	//capsule.radius = ball.radius;
+	//capsule.segment.origin = ball.position;
+	//capsule.segment.diff = ball.position;
 
-	// 余分
-	float extra = 0.0001f;
+	//// 余分
+	//float extra = 0.0001f;
+
+	// カプセル1
+	Capsule capsule1;
+	capsule1.radius = 0.1f;
+	capsule1.segment.origin = { 0.0f, 0.0f, 0.0f };
+	capsule1.segment.diff = { 0.0f, 0.2f, 0.0f };
+
+	Capsule capsule2;
+	capsule2.radius = 0.1f;
+	capsule2.segment.origin = { 0.0f, 1.0f, 0.0f };
+	capsule2.segment.diff = { 0.0f, 0.2f, 0.0f };
+
+	unsigned int color = WHITE;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -95,29 +108,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//計算
 
-		if (isMove) {
-			capsule.segment.origin = ball.position;
-			ball.velocity = Add(ball.velocity, ball.acceleration * deltaTime);
-			ball.position = Add(ball.position, ball.velocity * deltaTime);
-			capsule.segment.diff = ball.position;
-			if (IsCollision(capsule, plane)) {
+		//if (isMove) {
+		//	capsule.segment.origin = ball.position;
+		//	ball.velocity = Add(ball.velocity, ball.acceleration * deltaTime);
+		//	ball.position = Add(ball.position, ball.velocity * deltaTime);
+		//	capsule.segment.diff = ball.position;
+		//	if (IsCollision(capsulecapsule, plane)) {
 
-				//isMove = false;//デバッグ
-				
-				float distance = Dot(plane.normal, ball.position) - plane.distance;
-				if (distance >= 0 ) {
-					ball.position = ball.position + (plane.normal * (ball.radius - distance + extra));
-				}
-				else{
-					ball.position = ball.position + (plane.normal * (distance + ball.radius + extra));
-				}
+		//		//isMove = false;//デバッグ
+		//		
+		//		float distance = Dot(plane.normal, ball.position) - plane.distance;
+		//		if (distance >= 0 ) {
+		//			ball.position = ball.position + (plane.normal * (ball.radius - distance + extra));
+		//		}
+		//		else{
+		//			ball.position = ball.position + (plane.normal * (distance + ball.radius + extra));
+		//		}
 
-				ball.velocity = Reflect(ball.velocity, plane.normal) * e;
+		//		ball.velocity = Reflect(ball.velocity, plane.normal) * e;
 
-			}
+		//	}
+		//}
+
+		if (IsCollision(capsule1, capsule2)) {
+			color = RED;
 		}
-
-
+		else {
+			color = WHITE;
+		}
 
 		///
 		/// ↑更新処理ここまで
@@ -129,36 +147,45 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(worldMViewProjectionMatrix, viewportMatrix);
 		
-		DrawSphere(Sphere(ball.position, ball.radius), worldMViewProjectionMatrix, viewportMatrix, ball.color);
+		//DrawSphere(Sphere(ball.position, ball.radius), worldMViewProjectionMatrix, viewportMatrix, ball.color);
 
 		//デバッグ
-		//DrawSphere(Sphere(capsule.segment.origin, capsule.radius), worldMViewProjectionMatrix, viewportMatrix, GREEN);
-		//DrawSphere(Sphere(capsule.segment.diff, capsule.radius), worldMViewProjectionMatrix, viewportMatrix, RED);
+		DrawSphere(Sphere(capsule1.segment.origin, capsule1.radius), worldMViewProjectionMatrix, viewportMatrix, color);
+		DrawSphere(Sphere(Add(capsule1.segment.diff,capsule1.segment.origin), capsule1.radius), worldMViewProjectionMatrix, viewportMatrix, color);
 
-		DrawPlane(plane, worldMViewProjectionMatrix, viewportMatrix, WHITE);
+		DrawSphere(Sphere(capsule2.segment.origin, capsule2.radius), worldMViewProjectionMatrix, viewportMatrix, color);
+		DrawSphere(Sphere(Add(capsule2.segment.diff, capsule2.segment.origin), capsule2.radius), worldMViewProjectionMatrix, viewportMatrix, color);
+
+		//DrawPlane(plane, worldMViewProjectionMatrix, viewportMatrix, WHITE);
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 		
-		if (isMove) {
-			if (ImGui::Button("stop")) {
-				isMove = false;
-			}
-		}
-		else {
-			if (ImGui::Button("start")) {
-				isMove = true;
-			}
-		}
-		if (ImGui::Button("reset")) {
-			ball.position = { 0.8f, 1.2f, 0.3f };
-			ball.acceleration = { 0.0f,-9.8f, 0.0f };
-			ball.velocity = { 0.0f,0.0f,0.0f };
-			isMove = false;
-		}
+		ImGui::DragFloat3("origin1", &capsule1.segment.origin.x, 0.01f);
+		ImGui::DragFloat3("diff1", &capsule1.segment.diff.x, 0.01f);
 
-		ImGui::DragFloat("e", &e, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat3("origin2", &capsule2.segment.origin.x, 0.01f);
+		ImGui::DragFloat3("diff2", &capsule2.segment.diff.x, 0.01f);
+
+		//if (isMove) {
+		//	if (ImGui::Button("stop")) {
+		//		isMove = false;
+		//	}
+		//}
+		//else {
+		//	if (ImGui::Button("start")) {
+		//		isMove = true;
+		//	}
+		//}
+		//if (ImGui::Button("reset")) {
+		//	ball.position = { 0.8f, 1.2f, 0.3f };
+		//	ball.acceleration = { 0.0f,-9.8f, 0.0f };
+		//	ball.velocity = { 0.0f,0.0f,0.0f };
+		//	isMove = false;
+		//}
+
+		//ImGui::DragFloat("e", &e, 0.01f, 0.0f, 1.0f);
 
 		ImGui::End();
 

@@ -1,6 +1,7 @@
 #include "MT3Collision.h"
 #include <cmath>
 #include <algorithm>
+#include "ShortestDistance.h"
 
 bool IsCollision(const Sphere& s1, const Sphere& s2) {
 
@@ -761,8 +762,14 @@ bool IsCollision(const Capsule& capsule, const Plane& plane) {
 bool IsCollision(const Capsule& capsule1, const Capsule& capsule2)
 {
 
+	// 衝突位置
+	Vector3 p1 = {0.0f, 0.0f, 0.0f};
+	Vector3 p2 = { 0.0f, 0.0f, 0.0f };
+	// 移動距離(ベクトル係数)
+	float t1 = 0.0f;
+	float t2 = 0.0f;
+	float d = ShortestDistance::SegmentSegmentDist(capsule1.segment, capsule2.segment, p1, p2, t1, t2);
 
-
-	return false;
+	return (d <= capsule1.radius + capsule2.radius);
 }
 
