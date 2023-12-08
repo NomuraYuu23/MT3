@@ -1,5 +1,6 @@
 #include "ShortestDistance.h"
 #include <cmath>
+#include <algorithm>
 
 ShortestDistance* ShortestDistance::GetInstance()
 {
@@ -28,7 +29,7 @@ float ShortestDistance::PointSegmentDist(const Vector3& p, const Segment& seg, V
 	const Vector3 e = Add(seg.origin, seg.diff);
 
 	// 垂線の長さ、垂線の足の座標およびtを算出
-	float len = PointLineDist(p, Line(seg.origin, Subtract(e, seg.origin)), h, t);
+	float len = PointLineDist(p, Line(seg.origin, seg.diff), h, t);
 
 	if (Dot(Subtract(p, seg.origin), Subtract(e, seg.origin)) < 0.0f) {
 		// 始点側の外側
@@ -70,6 +71,79 @@ float ShortestDistance::LineLineDist(const Line& l1, const Line& l2, Vector3& p1
 	p2 = Add(Multiply(1.0f - t2, l2.origin), Multiply(t2, Add(l2.origin, l2.diff)));
 
 	return Length(Subtract(p2,p1));
+
+}
+
+float ShortestDistance::SegmentSegmentDist(const Segment& seg1, const Segment& seg2, Vector3& p1, Vector3& p2, float& t1, float t2)
+{
+	
+	// S1が縮退している?
+	if (Length(Normalize(seg1.diff)) == 0.0f) {
+		// s2も縮退か？
+		if (Length(Normalize(seg2.diff)) == 0.0f) {
+			float len = Length(Subtract(seg2.origin, seg1.origin));
+			p1 = seg1.origin;
+			p2 = seg2.origin;
+			t1 = 0.0f;
+			t2 = 0.0f;
+			return len;
+		}
+		else {
+			float len = PointSegmentDist( seg1.origin, seg2, p2, t2);
+			p1 = seg1.origin;
+			t1 = 0.0f;
+			t2 = std::clamp(t2, 0.0f, 1.0f);
+			return len;
+		}
+	}
+
+	// S2が縮退している?
+	else if (Length(Normalize(seg2.diff)) == 0.0f) {
+		float len = PointSegmentDist(seg2.origin, seg1, p1, t1);
+		p2 = seg2.origin;
+		t2 = 0.0f;
+		t1 = std::clamp(t1, 0.0f, 1.0f);
+		return len;
+	}
+
+	// 線分同士
+
+	// 2線分が平行?
+	if (std::fabsf(Dot(Normalize(seg1.diff), Normalize(seg2.diff))) == 1.0f) {
+		float len = PointSegmentDist(seg1.origin, seg2, p2, t2);
+		p1 = seg1.origin;
+		t1 = 0.0f;
+		if (0.0f <= t2 && t2 <= 1.0f){
+			return len;
+		}
+	}
+	else {
+		float len = LineLineDist(Line(seg1.origin, seg1.diff), Line(seg2.origin, seg2.diff), p1, p2, t1, t2);
+		if (0.0f <= t1 && t1 <= 1.0f &&
+			0.0f <= t2 && t2 <= 1.0f) {
+			return len;
+		}
+	}
+
+	// 垂線の足が外にある
+	t1 = std::clamp(t1, 0.0f, 1.0f);
+	p1 = Add(Multiply(1.0f - t1, seg1.origin), Multiply(t1, Add(seg1.origin, seg1.diff)));
+	float len = PointSegmentDist(p1, seg2, p2, t2);
+	if (0.0f <= t2 && t2 <= 1.0f) {
+		return len;
+	}
+
+	t2 = std::clamp(t2, 0.0f, 1.0f);
+	p2 = Add(Multiply(1.0f - t2, seg2.origin), Multiply(t2, Add(seg2.origin, seg2.diff)));
+	float len = PointSegmentDist(p2, seg1, p1, t1);
+	if (0.0f <= t1 && t1 <= 1.0f) {
+		return len;
+	}
+
+	// 双方の端点が最短と判明
+	t1 = std::clamp(t1, 0.0f, 1.0f);
+	p1 = Add(Multiply(1.0f - t1, seg1.origin), Multiply(t1, Add(seg1.origin, seg1.diff)));
+	return Length(Subtract(p2, p1));
 
 }
 
