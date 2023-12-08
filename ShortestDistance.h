@@ -32,6 +32,18 @@ public:
     /// <param name="t">端点位置(戻り値)</param>
     /// <returns>最短距離</returns>
     static float PointSegmentDist(const Vector3& p, const Segment& seg, Vector3& h, float& t);
+    
+    /// <summary>
+    /// 2直線の最短距離
+    /// </summary>
+    /// <param name="l1">直線1</param>
+    /// <param name="l2">直線2</param>
+    /// <param name="p1">l1の垂線の足</param>
+    /// <param name="p2">l2の垂線の足</param>
+    /// <param name="t1">l1のベクトル係数</param>
+    /// <param name="t2">l2のベクトル係数</param>
+    /// <returns>最短距離</returns>
+    static float LineLineDist(const Line& l1, const Line& l2, Vector3& p1, Vector3& p2, float& t1, float t2);
 
 private:
     ShortestDistance() = default;
