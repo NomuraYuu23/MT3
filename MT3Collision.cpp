@@ -758,3 +758,11 @@ bool IsCollision(const Capsule& capsule, const Plane& plane) {
 
 }
 
+bool IsCollision(const Capsule& capsule1, const Capsule& capsule2)
+{
+
+
+
+	return false;
+}
+

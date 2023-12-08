@@ -116,6 +116,7 @@
     <ClCompile Include="MT3RenderingPipeline.cpp" />
     <ClCompile Include="MT3Vector3.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="ShortestDistance.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="OperatorOverloading.h" />
     <ClInclude Include="Pendulum.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="ShortestDistance.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Spring.h" />
     <ClInclude Include="Triangle.h" />

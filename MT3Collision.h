@@ -161,3 +161,11 @@ bool IsCollision(const OBB& obb, const OBB& obb2);
 /// <param name="plane"></param>
 /// <returns></returns>
 bool IsCollision(const Capsule& capsule, const Plane& plane);
+
+/// <summary>
+/// カプセルとカプセル
+/// </summary>
+/// <param name="capsule"></param>
+/// <param name="plane"></param>
+/// <returns></returns>
+bool IsCollision(const Capsule& capsule1, const Capsule& capsule2);

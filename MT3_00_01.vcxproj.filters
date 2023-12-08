@@ -62,6 +62,9 @@
     <ClCompile Include="Plane.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="ShortestDistance.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -153,5 +156,6 @@
     <ClInclude Include="Pendulum.h" />
     <ClInclude Include="ConicalPendulum.h" />
     <ClInclude Include="Capsule.h" />
+    <ClInclude Include="ShortestDistance.h" />
   </ItemGroup>
 </Project>
