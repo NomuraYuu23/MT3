@@ -847,8 +847,29 @@ bool IsCollision(const Capsule& capsule, const AABB& aabb)
 
 bool IsCollision(const Capsule& capsule, const OBB& obb)
 {
-	capsule;
-	obb;
-	return false;
+
+	Matrix4x4 obbWorldMatrix = {
+	obb.otientatuons[0].x,obb.otientatuons[1].x, obb.otientatuons[2].x, 0,
+	obb.otientatuons[0].y,obb.otientatuons[1].y, obb.otientatuons[2].y, 0,
+	obb.otientatuons[0].z,obb.otientatuons[1].z, obb.otientatuons[2].z, 0,
+	obb.center.x, obb.center.y, obb.center.y, 1 };
+
+	Matrix4x4 obbWorldMatrixInverse = Inverse(obbWorldMatrix);
+
+	Vector3 localOrigin = Transform(capsule.segment.origin, obbWorldMatrixInverse);
+	Vector3 localEnd = Transform(Add(capsule.segment.origin, capsule.segment.diff), obbWorldMatrixInverse);
+
+	Capsule localCapsule = {};
+	localCapsule.radius = capsule.radius;
+	localCapsule.segment.origin = localOrigin;
+	localCapsule.segment.diff = Subtract(localEnd, localOrigin);
+
+	AABB localAABB{
+		{-obb.size.x, -obb.size.y, -obb.size.z},
+		{obb.size.x, obb.size.y, obb.size.z},
+	};
+
+	return IsCollision(localCapsule, localAABB);
+
 }
 
