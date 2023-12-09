@@ -78,10 +78,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	capsule1.segment.origin = { 0.0f, 0.0f, 0.0f };
 	capsule1.segment.diff = { 0.0f, 0.2f, 0.0f };
 
-	Capsule capsule2;
-	capsule2.radius = 0.1f;
-	capsule2.segment.origin = { 0.0f, 1.0f, 0.0f };
-	capsule2.segment.diff = { 0.0f, 0.2f, 0.0f };
+	OBB obb1;
+	obb1 = 
 
 	unsigned int color = WHITE;
 
@@ -107,28 +105,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
 		//計算
-
-		//if (isMove) {
-		//	capsule.segment.origin = ball.position;
-		//	ball.velocity = Add(ball.velocity, ball.acceleration * deltaTime);
-		//	ball.position = Add(ball.position, ball.velocity * deltaTime);
-		//	capsule.segment.diff = ball.position;
-		//	if (IsCollision(capsulecapsule, plane)) {
-
-		//		//isMove = false;//デバッグ
-		//		
-		//		float distance = Dot(plane.normal, ball.position) - plane.distance;
-		//		if (distance >= 0 ) {
-		//			ball.position = ball.position + (plane.normal * (ball.radius - distance + extra));
-		//		}
-		//		else{
-		//			ball.position = ball.position + (plane.normal * (distance + ball.radius + extra));
-		//		}
-
-		//		ball.velocity = Reflect(ball.velocity, plane.normal) * e;
-
-		//	}
-		//}
 
 		if (IsCollision(capsule1, capsule2)) {
 			color = RED;
@@ -156,8 +132,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawSphere(Sphere(capsule2.segment.origin, capsule2.radius), worldMViewProjectionMatrix, viewportMatrix, color);
 		DrawSphere(Sphere(Add(capsule2.segment.diff, capsule2.segment.origin), capsule2.radius), worldMViewProjectionMatrix, viewportMatrix, color);
 
-		//DrawPlane(plane, worldMViewProjectionMatrix, viewportMatrix, WHITE);
-
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
@@ -167,25 +141,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		ImGui::DragFloat3("origin2", &capsule2.segment.origin.x, 0.01f);
 		ImGui::DragFloat3("diff2", &capsule2.segment.diff.x, 0.01f);
-
-		//if (isMove) {
-		//	if (ImGui::Button("stop")) {
-		//		isMove = false;
-		//	}
-		//}
-		//else {
-		//	if (ImGui::Button("start")) {
-		//		isMove = true;
-		//	}
-		//}
-		//if (ImGui::Button("reset")) {
-		//	ball.position = { 0.8f, 1.2f, 0.3f };
-		//	ball.acceleration = { 0.0f,-9.8f, 0.0f };
-		//	ball.velocity = { 0.0f,0.0f,0.0f };
-		//	isMove = false;
-		//}
-
-		//ImGui::DragFloat("e", &e, 0.01f, 0.0f, 1.0f);
 
 		ImGui::End();
 

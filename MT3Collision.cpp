@@ -768,8 +768,87 @@ bool IsCollision(const Capsule& capsule1, const Capsule& capsule2)
 	// 移動距離(ベクトル係数)
 	float t1 = 0.0f;
 	float t2 = 0.0f;
-	float d = ShortestDistance::SegmentSegmentDist(capsule1.segment, capsule2.segment, p1, p2, t1, t2);
+	float dist = ShortestDistance::SegmentSegmentDist(capsule1.segment, capsule2.segment, p1, p2, t1, t2);
 
-	return (d <= capsule1.radius + capsule2.radius);
+	return (dist <= capsule1.radius + capsule2.radius);
+}
+
+bool IsCollision(const Capsule& capsule, const AABB& aabb)
+{
+
+	// 衝突位置
+	Vector3 p = { 0.0f, 0.0f, 0.0f };
+	// 移動距離(ベクトル係数)
+	float t = 0.0f;
+	// 埋まった部分 Dot
+	float d = 0.0f;
+
+	// 計算用
+	Vector3 start = capsule.segment.origin;
+	Vector3 end = Add(capsule.segment.origin, capsule.segment.diff);
+
+	// 線分確認
+	Vector3 tMin = {
+		(aabb.min.x - capsule.segment.origin.x) / capsule.segment.diff.x,
+		(aabb.min.y - capsule.segment.origin.y) / capsule.segment.diff.y,
+		(aabb.min.z - capsule.segment.origin.z) / capsule.segment.diff.z };
+
+	Vector3 tMax = {
+		(aabb.max.x - capsule.segment.origin.x) / capsule.segment.diff.x,
+		(aabb.max.y - capsule.segment.origin.y) / capsule.segment.diff.y,
+		(aabb.max.z - capsule.segment.origin.z) / capsule.segment.diff.z };
+
+	Vector3 tNear = { std::min(tMin.x, tMax.x) ,
+		std::min(tMin.y, tMax.y) ,
+		std::min(tMin.z, tMax.z) };
+
+	Vector3 tFar = { std::max(tMin.x, tMax.x) ,
+		std::max(tMin.y, tMax.y) ,
+		std::max(tMin.z, tMax.z) };
+
+	float tMin_ = std::max(std::max(tNear.x, tNear.y), tNear.z);
+	float tMax_ = std::min(std::min(tFar.x, tFar.y), tFar.z);
+
+	if (tMin_ <= tMax_) {
+
+		if (tMin_ < 1.0f && tMax_ > 0.0f) {
+			t = tMin_;
+			p = Add(Multiply(1.0f - tMin_, start), Multiply(tMin_, end));
+			d = capsule.radius;
+			return true;
+		}
+	}
+
+	// クランプ
+	tMin_ = std::clamp(tMin_, 0.0f, 1.0f);
+	tMax_ = std::clamp(tMax_, 0.0f, 1.0f);
+
+	Sphere sphere = { {0.0f,0.0f,0.0f}, 0.0f };
+
+	sphere = { Add(Multiply(1.0f - tMin_, start),Multiply(tMin_, end)) , capsule.radius };
+	if (IsCollision(aabb, sphere)) {
+		t = tMin_;
+		p = sphere.center;
+		//d = 
+		return true;
+	}
+
+	sphere = { Add(Multiply(1.0f - tMax_, start),Multiply(tMax_, end)) , capsule.radius };
+	if (IsCollision(aabb, sphere)) {
+		t = tMax_;
+		p = sphere.center;
+		//d = 
+		return true;
+	}
+
+	return false;
+
+}
+
+bool IsCollision(const Capsule& capsule, const OBB& obb)
+{
+	capsule;
+	obb;
+	return false;
 }
 
