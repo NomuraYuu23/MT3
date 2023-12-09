@@ -44,42 +44,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
-	//Plane plane;
-	//plane.normal = Normalize({ -0.2f, 1.2f, -0.3f });
-	////plane.normal = Normalize({ 0.0f, 1.0f, 0.0f });
-	//plane.distance = 0.0f;
-
-	//Ball ball{};
-	//ball.position = { 0.8f, 1.2f, 0.3f };
-	//ball.mass = 2.0f;
-	//ball.radius = 0.05f;
-	//ball.color = WHITE;
-	//ball.acceleration = { 0.0f,-9.8f, 0.0f };
-
-	//// 反発係数
-	//float e = 0.8f;
-
-	//float deltaTime = 1.0f / 60.0f;
-
-	//bool isMove = false;
-
-	//// カプセル
-	//Capsule capsule;
-	//capsule.radius = ball.radius;
-	//capsule.segment.origin = ball.position;
-	//capsule.segment.diff = ball.position;
-
-	//// 余分
-	//float extra = 0.0001f;
-
 	// カプセル1
 	Capsule capsule1;
 	capsule1.radius = 0.1f;
 	capsule1.segment.origin = { 0.0f, 0.0f, 0.0f };
 	capsule1.segment.diff = { 0.0f, 0.2f, 0.0f };
 
-	OBB obb1;
-	obb1 = 
+	AABB aabb1{
+		.min{-0.5f, -0.5f, -0.5f},
+		.max{ 0.0f,  0.0f,  0.0f},
+	};
 
 	unsigned int color = WHITE;
 
@@ -106,7 +80,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//計算
 
-		if (IsCollision(capsule1, capsule2)) {
+		if (IsCollision(capsule1, aabb1)) {
 			color = RED;
 		}
 		else {
@@ -129,8 +103,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawSphere(Sphere(capsule1.segment.origin, capsule1.radius), worldMViewProjectionMatrix, viewportMatrix, color);
 		DrawSphere(Sphere(Add(capsule1.segment.diff,capsule1.segment.origin), capsule1.radius), worldMViewProjectionMatrix, viewportMatrix, color);
 
-		DrawSphere(Sphere(capsule2.segment.origin, capsule2.radius), worldMViewProjectionMatrix, viewportMatrix, color);
-		DrawSphere(Sphere(Add(capsule2.segment.diff, capsule2.segment.origin), capsule2.radius), worldMViewProjectionMatrix, viewportMatrix, color);
+		DrawAABB(aabb1, worldMViewProjectionMatrix, viewportMatrix, color);
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
@@ -139,8 +112,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("origin1", &capsule1.segment.origin.x, 0.01f);
 		ImGui::DragFloat3("diff1", &capsule1.segment.diff.x, 0.01f);
 
-		ImGui::DragFloat3("origin2", &capsule2.segment.origin.x, 0.01f);
-		ImGui::DragFloat3("diff2", &capsule2.segment.diff.x, 0.01f);
+		ImGui::DragFloat3("min", &aabb1.min.x, 0.01f);
+		ImGui::DragFloat3("max", &aabb1.max.x, 0.01f);
 
 		ImGui::End();
 
