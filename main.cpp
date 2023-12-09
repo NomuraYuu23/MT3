@@ -74,6 +74,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		//OBB軸
+		Matrix4x4 rotateMatirx = Multiply(MakeRotateXMatrix(obbRotate.x), Multiply(MakeRotateYMatrix(obbRotate.y), MakeRotateZMatrix(obbRotate.z)));
+
+		obb.otientatuons[0].x = rotateMatirx.m[0][0];
+		obb.otientatuons[0].y = rotateMatirx.m[0][1];
+		obb.otientatuons[0].z = rotateMatirx.m[0][2];
+
+		obb.otientatuons[1].x = rotateMatirx.m[1][0];
+		obb.otientatuons[1].y = rotateMatirx.m[1][1];
+		obb.otientatuons[1].z = rotateMatirx.m[1][2];
+
+		obb.otientatuons[2].x = rotateMatirx.m[2][0];
+		obb.otientatuons[2].y = rotateMatirx.m[2][1];
+		obb.otientatuons[2].z = rotateMatirx.m[2][2];
+
 		//各種行列に計算
 		Matrix4x4 worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
@@ -117,7 +132,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("diff1", &capsule1.segment.diff.x, 0.01f);
 
 		ImGui::DragFloat3("center", &obb.center.x, 0.01f);
-		ImGui::DragFloat3("max", &aabb1.max.x, 0.01f);
+		ImGui::SliderAngle("obbRotateX", &obbRotate.x, 0.01f);
+		ImGui::SliderAngle("obbRotateY", &obbRotate.y, 0.01f);
+		ImGui::SliderAngle("obbRotateZ", &obbRotate.z, 0.01f);
+		ImGui::DragFloat3("size", &obb.size.x, 0.01f);
 
 		ImGui::End();
 
