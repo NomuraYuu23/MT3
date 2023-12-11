@@ -45,7 +45,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	//OBB
-	Vector3 obbRotate = { 0.0f, 0.0f, 0.0f };
+	Vector3 obbRotate = { 0.0f, 0.0f, 45.0f };
 	OBB obb{
 		0.0f,0.0f,0.0f,
 		1.0f,0.0f,0.0f,

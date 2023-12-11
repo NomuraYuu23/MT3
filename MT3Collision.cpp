@@ -862,7 +862,11 @@ bool IsCollision(const Capsule& capsule, const OBB& obb,
 		{obb.size.x, obb.size.y, obb.size.z},
 	};
 
-	return IsCollision(localCapsule, localAABB, p, t, pushBackDist);
+	bool result = IsCollision(localCapsule, localAABB, p, t, pushBackDist);
+
+	p = Transform(p, obbWorldMatrix);
+
+	return result;
 
 }
 

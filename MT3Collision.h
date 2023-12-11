@@ -181,7 +181,7 @@ bool IsCollision(const Capsule& capsule, const AABB& aabb,
 	Vector3& p, float& t, float& pushBackDist);
 
 /// <summary>
-/// カプセルとAABB
+/// カプセルとOBB
 /// </summary>
 /// <param name="capsule"></param>
 /// <param name="plane"></param>
