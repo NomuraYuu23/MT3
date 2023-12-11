@@ -87,7 +87,7 @@ bool IsCollision(const AABB& aabb1, const AABB& aabb2);
 /// <param name="aabb"></param>
 /// <param name="sphere"></param>
 /// <returns></returns>
-bool IsCollision(const AABB& aabb, const Sphere& sphere, float& distance);
+bool IsCollision(const AABB& aabb, const Sphere& sphere, float& pushBackDist);
 
 /// <summary>
 /// AABBと直線
