@@ -41,23 +41,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//3D描画
 	Vector3 rotate = { 0.0f, 0.0f, 0.0f };
 	Vector3 translate = {};
-	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
+	Vector3 cameraTranslate = { 0.0f,4.9f,-20.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
-	// カプセル1
-	Capsule capsule1;
-	capsule1.radius = 0.1f;
-	capsule1.segment.origin = { 0.0f, 0.0f, 0.0f };
-	capsule1.segment.diff = { 0.0f, 0.2f, 0.0f };
-	//OBB
-	Vector3 obbRotate = { 0.0f, 0.0f, 0.0f };
-	OBB obb{
-		0.0f,0.0f,0.0f,
-		1.0f,0.0f,0.0f,
-		0.0f,1.0f,0.0f,
-		0.0f,0.0f,1.0f,
-		0.83f,0.26f,0.24f
-	};
+	Sphere s1;
+	s1.center = {};
+	s1.radius = 0.2f;
+
+	Sphere s2;
+	s2.center = { -30.0f,0.1f,0.0f};
+	s2.radius = 0.2f;
+
+	float s2Vector = 5.02f;
 
 	unsigned int color = WHITE;
 
@@ -74,21 +69,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		//OBB軸
-		Matrix4x4 rotateMatirx = Multiply(MakeRotateXMatrix(obbRotate.x), Multiply(MakeRotateYMatrix(obbRotate.y), MakeRotateZMatrix(obbRotate.z)));
-
-		obb.otientatuons[0].x = rotateMatirx.m[0][0];
-		obb.otientatuons[0].y = rotateMatirx.m[0][1];
-		obb.otientatuons[0].z = rotateMatirx.m[0][2];
-
-		obb.otientatuons[1].x = rotateMatirx.m[1][0];
-		obb.otientatuons[1].y = rotateMatirx.m[1][1];
-		obb.otientatuons[1].z = rotateMatirx.m[1][2];
-
-		obb.otientatuons[2].x = rotateMatirx.m[2][0];
-		obb.otientatuons[2].y = rotateMatirx.m[2][1];
-		obb.otientatuons[2].z = rotateMatirx.m[2][2];
-
 		//各種行列に計算
 		Matrix4x4 worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
@@ -99,11 +79,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//計算
 
-		if (IsCollision(capsule1, obb)) {
-			color = RED;
-		}
-		else {
-			color = WHITE;
+		Vector3 s1PreCenter = s1.center;
+
+		Capsule c1;
+		c1.segment.origin = s1PreCenter;
+		c1.segment.diff = Subtract(s1.center, s1PreCenter);
+		c1.radius = s1.radius;
+
+		Vector3 s2PreCenter = s2.center;
+		s2.center.x += s2Vector;
+
+		Capsule c2;
+		c2.segment.origin = s2PreCenter;
+		c2.segment.diff = Subtract(s2.center, s2PreCenter);
+		c2.radius = s2.radius;
+		
+		Vector3 p1 = {};
+		Vector3 p2 = {};
+
+		float t1 = 0.0f;
+		float t2 = 0.0f;
+
+		float dist = 0.0f;
+
+		if (IsCollision(c1, c2, p1, p2, t1, t2, dist)) {
+			s2.center = p2;
+			s2.center = Subtract(s2.center, Multiply(dist, Vector3(1.0f, 0.0f, 0.0f)));
+			//s2.center = Add(s2.center, Multiply(s2Vector * t2, Vector3( 0.0f, 1.0f, 0.0f)));
 		}
 
 		///
@@ -117,25 +119,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGrid(worldMViewProjectionMatrix, viewportMatrix);
 		
 		//DrawSphere(Sphere(ball.position, ball.radius), worldMViewProjectionMatrix, viewportMatrix, ball.color);
+		DrawSphere(s1, worldMViewProjectionMatrix, viewportMatrix, color);
+		DrawSphere(s2, worldMViewProjectionMatrix, viewportMatrix, color);
 
 		//デバッグ
-		DrawSphere(Sphere(capsule1.segment.origin, capsule1.radius), worldMViewProjectionMatrix, viewportMatrix, color);
-		DrawSphere(Sphere(Add(capsule1.segment.diff,capsule1.segment.origin), capsule1.radius), worldMViewProjectionMatrix, viewportMatrix, color);
-
-		DrawOBB(obb, worldMViewProjectionMatrix, viewportMatrix, color);
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 		
-		ImGui::DragFloat3("origin1", &capsule1.segment.origin.x, 0.01f);
-		ImGui::DragFloat3("diff1", &capsule1.segment.diff.x, 0.01f);
-
-		ImGui::DragFloat3("center", &obb.center.x, 0.01f);
-		ImGui::SliderAngle("obbRotateX", &obbRotate.x, 0.01f);
-		ImGui::SliderAngle("obbRotateY", &obbRotate.y, 0.01f);
-		ImGui::SliderAngle("obbRotateZ", &obbRotate.z, 0.01f);
-		ImGui::DragFloat3("size", &obb.size.x, 0.01f);
 
 		ImGui::End();
 

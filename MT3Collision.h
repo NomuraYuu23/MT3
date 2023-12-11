@@ -87,7 +87,7 @@ bool IsCollision(const AABB& aabb1, const AABB& aabb2);
 /// <param name="aabb"></param>
 /// <param name="sphere"></param>
 /// <returns></returns>
-bool IsCollision(const AABB& aabb, const Sphere& sphere);
+bool IsCollision(const AABB& aabb, const Sphere& sphere, float& distance);
 
 /// <summary>
 /// AABBと直線
@@ -168,7 +168,8 @@ bool IsCollision(const Capsule& capsule, const Plane& plane);
 /// <param name="capsule"></param>
 /// <param name="plane"></param>
 /// <returns></returns>
-bool IsCollision(const Capsule& capsule1, const Capsule& capsule2);
+bool IsCollision(const Capsule& capsule1, const Capsule& capsule2,
+	Vector3& p1, Vector3& p2, float& t1, float& t2, float& pushBackDist);
 
 /// <summary>
 /// カプセルとAABB
@@ -176,7 +177,8 @@ bool IsCollision(const Capsule& capsule1, const Capsule& capsule2);
 /// <param name="capsule"></param>
 /// <param name="plane"></param>
 /// <returns></returns>
-bool IsCollision(const Capsule& capsule, const AABB& aabb);
+bool IsCollision(const Capsule& capsule, const AABB& aabb,
+	Vector3& p, float& t, float& pushBackDist);
 
 /// <summary>
 /// カプセルとAABB
@@ -184,4 +186,5 @@ bool IsCollision(const Capsule& capsule, const AABB& aabb);
 /// <param name="capsule"></param>
 /// <param name="plane"></param>
 /// <returns></returns>
-bool IsCollision(const Capsule& capsule, const OBB& obb);
+bool IsCollision(const Capsule& capsule, const OBB& obb,
+	Vector3& p, float& t, float& pushBackDist);

@@ -261,7 +261,7 @@ bool IsCollision(const AABB& aabb1, const AABB& aabb2) {
 /// <param name="aabb"></param>
 /// <param name="sphere"></param>
 /// <returns></returns>
-bool IsCollision(const AABB& aabb, const Sphere& sphere) {
+bool IsCollision(const AABB& aabb, const Sphere& sphere, float& distance) {
 
 	//最近接点を求める
 	Vector3 closestPoint{ std::clamp(sphere.center.x, aabb.min.x, aabb.max.x),
@@ -269,7 +269,7 @@ bool IsCollision(const AABB& aabb, const Sphere& sphere) {
 		std::clamp(sphere.center.z, aabb.min.z, aabb.max.z) };
 
 	//最近接点と球の中心との距離を求める
-	float distance = Length(Subtract(closestPoint, sphere.center));
+	distance = Length(Subtract(closestPoint, sphere.center));
 	//距離が半径よりも小さければ衝突
 	if (distance <= sphere.radius) {
 		return true;
@@ -421,8 +421,10 @@ bool IsCollision(const OBB& obb, const Sphere& sphere) {
 
 	Sphere sphereOBBLocal{ centerInOBBLocalSpace, sphere.radius };
 
+	float d = 0.0f;
+
 	//ローカル空間で衝突
-	return IsCollision(aabbOBBLocal, sphereOBBLocal);
+	return IsCollision(aabbOBBLocal, sphereOBBLocal, d);
 
 }
 
@@ -759,29 +761,20 @@ bool IsCollision(const Capsule& capsule, const Plane& plane) {
 
 }
 
-bool IsCollision(const Capsule& capsule1, const Capsule& capsule2)
+bool IsCollision(const Capsule& capsule1, const Capsule& capsule2,
+	Vector3& p1, Vector3& p2, float& t1, float& t2, float& pushBackDist)
 {
 
-	// 衝突位置
-	Vector3 p1 = {0.0f, 0.0f, 0.0f};
-	Vector3 p2 = { 0.0f, 0.0f, 0.0f };
-	// 移動距離(ベクトル係数)
-	float t1 = 0.0f;
-	float t2 = 0.0f;
 	float dist = ShortestDistance::SegmentSegmentDist(capsule1.segment, capsule2.segment, p1, p2, t1, t2);
+
+	pushBackDist = capsule1.radius + capsule2.radius - dist;
 
 	return (dist <= capsule1.radius + capsule2.radius);
 }
 
-bool IsCollision(const Capsule& capsule, const AABB& aabb)
+bool IsCollision(const Capsule& capsule, const AABB& aabb,
+	Vector3& p, float& t, float& pushBackDist)
 {
-
-	// 衝突位置
-	Vector3 p = { 0.0f, 0.0f, 0.0f };
-	// 移動距離(ベクトル係数)
-	float t = 0.0f;
-	// 埋まった部分 Dot
-	float d = 0.0f;
 
 	// 計算用
 	Vector3 start = capsule.segment.origin;
@@ -814,7 +807,7 @@ bool IsCollision(const Capsule& capsule, const AABB& aabb)
 		if (tMin_ < 1.0f && tMax_ > 0.0f) {
 			t = tMin_;
 			p = Add(Multiply(1.0f - tMin_, start), Multiply(tMin_, end));
-			d = capsule.radius;
+			pushBackDist = capsule.radius;
 			return true;
 		}
 	}
@@ -826,18 +819,16 @@ bool IsCollision(const Capsule& capsule, const AABB& aabb)
 	Sphere sphere = { {0.0f,0.0f,0.0f}, 0.0f };
 
 	sphere = { Add(Multiply(1.0f - tMin_, start),Multiply(tMin_, end)) , capsule.radius };
-	if (IsCollision(aabb, sphere)) {
+	if (IsCollision(aabb, sphere, pushBackDist)) {
 		t = tMin_;
 		p = sphere.center;
-		//d = 
 		return true;
 	}
 
 	sphere = { Add(Multiply(1.0f - tMax_, start),Multiply(tMax_, end)) , capsule.radius };
-	if (IsCollision(aabb, sphere)) {
+	if (IsCollision(aabb, sphere, pushBackDist)) {
 		t = tMax_;
 		p = sphere.center;
-		//d = 
 		return true;
 	}
 
@@ -845,7 +836,8 @@ bool IsCollision(const Capsule& capsule, const AABB& aabb)
 
 }
 
-bool IsCollision(const Capsule& capsule, const OBB& obb)
+bool IsCollision(const Capsule& capsule, const OBB& obb,
+	Vector3& p, float& t, float& pushBackDist)
 {
 
 	Matrix4x4 obbWorldMatrix = {
@@ -869,7 +861,7 @@ bool IsCollision(const Capsule& capsule, const OBB& obb)
 		{obb.size.x, obb.size.y, obb.size.z},
 	};
 
-	return IsCollision(localCapsule, localAABB);
+	return IsCollision(localCapsule, localAABB, p, t, pushBackDist);
 
 }
 
